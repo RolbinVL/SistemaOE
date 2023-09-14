@@ -1,0 +1,584 @@
+﻿@model X.PagedList.IPagedList<Administrativo>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common;
+
+@{
+    ViewData["Title"] = "Lista de Administrativos";
+
+
+}
+<div class="container margin-container p-4 glass" id="renderBody">
+    <div class="row fila">
+
+        <!--BOTON-->
+
+        <div class="col-xl-3 col-lg-5 col-md-5 col-sm-12"><h3 class="d-flex justify-content-center">Administrador</h3></div>
+
+        <button type="button"
+                class="btn btn-primary col-xl-2 col-lg-2 col-md-2 col-sm-12"
+                id="viewCreatePage">
+            <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
+            Agregar
+        </button>
+
+
+        <!--Barra busqueda-->
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12  offset-xl-2 ">
+            <div class="input-group ">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Buscar..."
+                       aria-label="Buscar..."
+                       aria-describedby="button-search"
+                       id="buscar" />
+
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div id="resultados-busqueda" class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Apellidos
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Domicilio
+                    </th>
+
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var admin in Model)
+                {
+                    <tr>
+                        <td id="Nomb">
+                            @admin.Nombre
+
+                        </td>
+                        <td id="Apell">
+                            @admin.Apellidos
+                        </td>
+                        <td id="Ema">
+                            @admin.Email
+                        </td>
+                        <td id="Domi">
+                            @admin.Domicilio
+                        </td>
+
+                        <td>
+                            <button type="button" id="btnEditar" data-id="@admin.IdAdministrativo" class="btn btn-warning">
+                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
+                                Edit
+                            </button>
+                            <button type="button" id="btnDetalles" data-id="@admin.IdAdministrativo" class="btn btn-primary">
+                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
+                                Details
+                            </button>
+                            <button type="button" id="btnEliminar" data-id="@admin.IdAdministrativo" class="btn btn-danger">
+                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="mensaje-vacio" class="text-center text-muted" style="display: none;">
+        No se encontraron registros.
+    </div>
+
+    <div id="pagination-container" class="pagination">
+        <ul class="pagination">
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = 0 })">&lt;&lt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber - 2 })">&lt;</a>
+                </li>
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { PagActual = i - 1 })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber })">&gt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageCount - 1 })">&gt;&gt;</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <br />
+    <br />
+    <br />
+</div>
+
+
+<!--
+    Vista de los Modales
+-->
+<!------------------------------------------Modal Agregar y Editar----------------------------------------------->
+<div class="modal fade"
+     id="agregarAdm"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="grupo__Id">
+                    <label for="id" class="col-form-label">ID:</label>
+                    <input name="id" disabled type="number" class="form-control" id="id" readonly>
+                </div>
+                <form id="createForm">
+                    <div class="form-group" id="grupo__Nombre">
+                        <label for="nombre" class="col-form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Ingrese el Nombre" required />
+                        <label for="nombre" class="m-1 msj__label" id="lblNombreError"></label>
+                        <div class="invalid-feedback">
+                            El Nombre es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Apellidos">
+                        <label for="apellido" class="col-form-label">Apellidos:</label>
+                        <input type="text" class="form-control" id="apellido" placeholder="Ingrese Apellodos" required />
+                        <label for="apellido" class="m-1 msj__label" id="lblApellidoError"></label>
+                        <div class="invalid-feedback">
+                            El Apellido es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Email">
+                        <label for="email" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required />
+                        <label for="nombre" class="m-1 msj__label" id="lblEmailError"></label>
+                        <div class="invalid-feedback">
+                            El Email es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Domicilio">
+                        <label for="domicilio" class="col-form-label">Domicilio:</label>
+                        <textarea type="text" class="form-control" id="domicilio" placeholder="Ingrese el Domicilio" required></textarea>
+                        <label for="domicilio" class="m-1 msj__label" id="lblDomicilioError"></label>
+                        <div class="invalid-feedback">
+                            El Domicilio es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Contraseña">
+                        <label for="inputPassword5" class="form-label">Contraseña</label>
+                        <input type="password" id="contraseña" class="form-control" aria-describedby="passwordHelpBlock">
+                        <div id="passwordHelpBlock" class="form-text">
+                            Su contraseña debe tener entre 8 y 20 caracteres, contener letras y números, y no debe contener espacios, caracteres especiales ni emoji.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" id="btnConfi"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Elininar----------------------------------------------->
+<div class="modal fade"
+     id="eliminarAdmistrativo"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Mensaje de Confirmación</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="eliminarForm">
+
+                <input type="hidden" id="idEliminar" name="idEliminar" value="" />
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Datalles----------------------------------------------->
+<div class="modal fade"
+     id="detallesAdmistrativo"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Detalles del Registro</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nombre:</strong> <span id="detalleNombre"></span></p>
+                <p><strong>Apellidos:</strong> <span id="detalleApellidos"></span></p>
+                <p><strong>Email:</strong> <span id="detalleEmail"></span></p>
+                <p><strong>Domicilio:</strong> <span id="detalleDomicilio"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrarDetalles" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+
+         // Obtiene el objeto global "document" para manipular el DOM
+         const d = document,
+
+         // Selecciona el elemento con el id "renderBody" y lo asigna a la variable $renderBody
+         $renderBody = d.getElementById("renderBody");
+
+         // Event listener para clics en el cuerpo del documento
+         $renderBody.addEventListener("click", (e) => {
+             // Obtiene el valor del atributo "data-value" del elemento clicado, o asigna una cadena vacía si no existe
+             //let page = e.target.dataset.value || "";
+
+             // Comprobación de condiciones para diferentes acciones según el elemento clicado
+
+             //-----------------------------------------------------Vista Crear
+             if (e.target.id === "viewCreatePage") {
+                 // Acción cuando se hace clic en el botón para abrir la vista de creación
+                 console.log("Creando");
+                 $("#createForm")[0].reset();
+                 // Cambia el título del modal a "Crear Administrador"
+                 $("#agregarAdm .modal-title").text("Crear Administrador");
+                 $("#grupo__Id").hide();//oculta el div de id
+                 $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
+                 $("#agregarAdm").modal("show");// Muestra el modal para crear una nueva entidad
+
+
+             }
+             //-----------------------------------------------------Vista Editar
+             if (e.target.id === "btnEditar") {
+                 // Acción cuando se hace clic en el botón para abrir la vista de edición
+                 let id = e.target.dataset.id;
+                 console.log(id);
+                 console.log("Editando");
+
+
+                 // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                 fetch("/Administrativoes/GetAdministrador?id=" + id + "&verId=true")
+                     .then(response => response.json())
+                     .then(result => {
+                         console.log(result);
+
+                         // Actualiza los campos del formulario con los datos obtenidos
+                         if (result) {
+                             if (result.nombre) {
+                                 d.getElementById("id").value = result.idAdministrativo;
+                             }
+                             if (result.nombre) {
+                                 d.getElementById("nombre").value = result.nombre;
+                             }
+                             if (result.apellidos) {
+                                 d.getElementById("apellido").value = result.apellidos;
+                             }
+                             if (result.email) {
+                                 d.getElementById("email").value = result.email;
+                             }
+                             if (result.domicilio) {
+                                 d.getElementById("domicilio").value = result.domicilio;
+                             }
+                             if (result.password) {
+                                 d.getElementById("contraseña").value = result.password;
+                             }
+                         }
+
+
+                         // Cambia el título del modal a "Editar Administrador"
+                         $("#agregarAdm .modal-title").text("Editar Administrador");
+                         $("#grupo__Id").hide();//oculta el div de id
+                         $("#btnConfi").text("Editar"); // Cambia el texto del botón a "Editar"
+                         $("#agregarAdm").modal("show");// Muestra el modal para crear una nueva entidad
+                     })
+                 .catch(error => {
+                     console.error("Error en la solicitud fetch:", error);
+                 });
+             }
+             //-----------------------------------------------------Vista Detalles
+             if (e.target.id === "btnDetalles") {
+                 // Acción cuando se hace clic en el botón para mostrar detalles (bitácora)
+                 let id = e.target.dataset.id;
+                 console.log("Detalles");
+                 console.log(id);
+                 // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                 fetch("/Administrativoes/GetAdministrador?id=" + id + "&verId=true")
+                     .then(response => response.json())
+                     .then(result => {
+                         console.log(result);
+
+                         // Actualiza los campos del formulario con los datos obtenidos
+                         if (result) {
+                             if (result.nombre) {
+                                 d.getElementById("detalleNombre").textContent = result.nombre;
+                             }
+                             if (result.apellidos) {
+                                 d.getElementById("detalleApellidos").textContent = result.apellidos;
+                             }
+                             if (result.email) {
+                                 d.getElementById("detalleEmail").textContent = result.email;
+                             }
+                             if (result.domicilio) {
+                                 d.getElementById("detalleDomicilio").textContent = result.domicilio;
+                             }
+                         }
+
+                         $("#detallesAdmistrativo").modal("show");// Muestra el modal con los detalles (bitácora)
+                     })
+                     .catch(error => {
+                         console.error("Error en la solicitud fetch:", error);
+                     });
+             }
+             //-----------------------------------------------------Vista Eliminar
+             if (e.target.id === "btnEliminar") {
+                 // Acción cuando se hace clic en el botón para Eliminar un registro
+                 let id = e.target.dataset.id;
+                 console.log("Eliminando");
+                 console.log(id);
+
+                 $("#idEliminar").val(id);
+                 $("#eliminarAdmistrativo").modal("show");
+
+             }
+
+         });
+
+         // Event listener para envío de formularios
+         $renderBody.addEventListener("submit", (e) => {
+
+             // Prevenir el comportamiento predeterminado de envío del formulario
+             e.preventDefault();
+             console.log(e.target);
+
+             //-----------------------------------------------------Crear ADM
+             let title = $("#agregarAdm .modal-title").text();
+             console.log(title);
+
+
+             if (e.target.id === "createForm" && title === "Crear Administrador") {
+                 // Datos a enviar en la solicitud POST
+                 const data = {
+                     Nombre: d.getElementById("nombre").value,
+                     Apellidos: d.getElementById("apellido").value,
+                     Email: d.getElementById("email").value,
+                     Domicilio: d.getElementById("domicilio").value,
+                     Password: d.getElementById("contraseña").value,
+                 };
+                 console.log(data);
+
+                 // Realizar la solicitud fetch
+                 fetch("/Administrativoes/CrearAdministrador", {
+                     method: "POST",
+                     headers: {
+                         "Content-Type": "application/json"
+                     },
+                     body: JSON.stringify(data)
+                 })
+                     .then(response => response.json())
+                     .then(result => {
+                         if (result.status == 1) {
+                             $("#agregarAdm").modal("hide");
+                             d.getElementById("createForm").reset();
+                             console.log("Se agrego");
+                             alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                             setTimeout(() => {
+                                 location.reload();
+                             }, 2000); // 2000 milisegundos = 2 segundo
+                         } else {
+                             console.log("No se agrego");
+                             alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                         }
+                     })
+                     .catch(error => {
+                         console.error("Error en la solicitud fetch:", error);
+                     });
+
+             }
+
+             //-----------------------------------------------------Editar ADM
+             if (e.target.id === "createForm" && title === "Editar Administrador") {
+                 console.log("Entro en editar");
+                 const data = {
+                     Id: d.getElementById("id").value,
+                     Nombre: d.getElementById("nombre").value,
+                     Apellidos: d.getElementById("apellido").value,
+                     Email: d.getElementById("email").value,
+                     Domicilio: d.getElementById("domicilio").value,
+                     Password: d.getElementById("contraseña").value,
+                 };
+                 console.log(data);
+                 // Realizar la solicitud fetch
+                 let id = d.getElementById("id").value;
+                 fetch(`/Administrativoes/ActualizarAdministrador/${id}`, {
+                     method: "POST", // Cambiar a POST
+                     headers: {
+                         "Content-Type": "application/json"
+                     },
+                     body: JSON.stringify(data)
+                 })
+                     .then(response => response.json())
+                     .then(result => {
+                         if (result.status == 1) {
+                             $("#agregarAdm").modal("hide");
+                             d.getElementById("createForm").reset();
+                             console.log("Se actualizó");
+                             alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                             setTimeout(() => {
+                                 location.reload();
+                             }, 2000); // 2000 milisegundos = 2 segundo
+                         } else {
+                             console.log("No se actualizó");
+                             alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                         }
+                     })
+                     .catch(error => {
+                         console.error("Error en la solicitud fetch:", error);
+                     });
+
+             }
+
+             //-----------------------------------------------------Eliminar ADM
+             if (e.target.id === "eliminarForm") {
+                 console.log("Eliminando");
+
+                 let id = d.getElementById("idEliminar").value;
+
+                 // Realizar la solicitud fetch para eliminar el administrativo
+                 fetch(`/Administrativoes/EliminarAdministrativo?id=${id}`, {
+                     method: "POST",
+                     headers: {
+                         "Content-Type": "application/json"
+                     }
+                 })
+                     .then(response => response.json())
+                     .then(result => {
+                         if (result.status == 1) {
+                             $("#eliminarAdmistrativo").modal("hide");
+                             console.log("Se eliminó");
+                             alert('Bien! ' + result.mensaje);
+                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                             setTimeout(() => {
+                                 window.location.href = "/Administrativoes/Index";
+                             }, 2000); // 2000 milisegundos = 2 segundo
+                         } else {
+                             console.log("No se eliminó");
+                             alert('Opps! ' + result.mensaje);
+                         }
+                     })
+                     .catch(error => {
+                         console.error("Error en la solicitud fetch:", error);
+                     });
+             }
+
+         });
+
+         //Funcion Buscar
+        $(d).ready(function () {
+             $("#buscar").on("keyup", function () {
+                 var searchTerm = $(this).val();
+                 // var pageNumber = 0; // Restablecer el número de página al buscar
+                 if (searchTerm === "") {
+                         // Si no hay texto de búsqueda, obtener todos los registros
+                         window.location.reload();
+
+                 }
+                 else {
+                      $.ajax({
+                          url: "@Url.Action("Buscar", "Administrativoes")",
+                          type: "GET",
+                          data: { searchTerm: searchTerm },
+                          success: function (data) {
+                              if (data.administrativos.length === 0) {
+                                  // Si no hay registros, ocultar la tabla y mostrar el mensaje
+                                  $("#resultados-busqueda").hide();
+                                  $("#pagination-container").hide();
+                                  $("#mensaje-vacio").show();
+
+                              }else {
+
+                                  // Limpiar la tabla actual
+                                  $("#resultados-busqueda tbody").empty();
+                                  $("#pagination-container").hide();
+
+                                  // Agregar los resultados a la tabla
+                                  for (var i = 0; i < data.administrativos.length; i++) {
+                                      var admin = data.administrativos[i];
+                                      var row = "<tr>" +
+                                          "<td>" + admin.nombre + "</td>" +
+                                          "<td>" + admin.apellidos + "</td>" +
+                                          "<td>" + admin.email + "</td>" +
+                                          "<td>" + admin.domicilio + "</td>" +
+                                          "<td>" +
+                                          "<a href='/Administrativoes/Edit/" + admin.idAdministrativo + "' class='btn btn-warning'>Edit</a> | " +
+                                          "<a href='/Administrativoes/Details/" + admin.idAdministrativo + "' class='btn btn-primary'>Details</a> | " +
+                                          "<a href='/Administrativoes/Delete/" + admin.idAdministrativo + "' class='btn btn-danger'>Delete</a>" +
+                                          "</td>" +
+                                          "</tr>";
+
+                                      $("#resultados-busqueda tbody").append(row);
+                                  }
+
+                                  $("#resultados-busqueda").show();
+                                  $("#mensaje-vacio").hide();
+
+
+                              }
+
+                          }
+                     });
+                 }
+             });
+         });
+
+    </script>
+}
+
+
+
+
