@@ -1,0 +1,552 @@
+﻿@model X.PagedList.IPagedList<Seccion>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common;
+
+@{
+    ViewData["Title"] = "Lista de Seccion";
+}
+
+
+
+<div class="container margin-container p-4 glass" id="renderBody">
+    <div class="row fila">
+
+        <!--BOTON-->
+
+        <div class="col-xl-3 col-lg-5 col-md-5 col-sm-12"><h3 class="d-flex justify-content-center">Seccion</h3></div>
+
+        <button type="button"
+                class="btn  col-xl-2 col-lg-2 col-md-2 col-sm-12"
+                id="viewCreatePage" style="background-color: #009688">
+            <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
+            Agregar
+        </button>
+
+
+        <!--Barra busqueda-->
+        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12  offset-xl-2 ">
+            <div class="input-group ">
+                <input type="text"
+                       class="form-control"
+                       placeholder="Buscar..."
+                       aria-label="Buscar..."
+                       aria-describedby="button-search"
+                       id="buscar" />
+
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div id="resultados-busqueda" class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Cantidad de estudiantes
+                    </th>
+
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var secc in Model)
+                {
+                    <tr>
+                        <td id="Nomb">
+                            @secc.NombreSeccion
+
+                        </td>
+                        <td id="Cant">
+                            @secc.CantidadEstudiante
+
+                        </td>
+
+                        <td>
+                            <button type="button" id="btnEditar" data-id="@secc.NumSeccion" class="btn" style="background-color: #009688">
+                                <!-- <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </button>
+                            <button type="button" id="btnDetalles" data-id="@secc.NumSeccion" class="btn" style="background-color:#009688">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-text" viewBox="0 0 16 16">
+                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
+                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
+                                </svg>
+                            </button>
+                            <button type="button" id="btnEliminar" data-id="@secc.NumSeccion" class="btn" style="background-color:#009688">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="mensaje-vacio" class="text-center text-muted" style="display: none;">
+        No se encontraron registros.
+    </div>
+
+    <div id="pagination-container" class="pagination">
+        <ul class="pagination">
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = 0 })">&lt;&lt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber - 2 })">&lt;</a>
+                </li>
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { PagActual = i - 1 })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber })">&gt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageCount - 1 })">&gt;&gt;</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <br />
+    <br />
+    <br />
+</div>
+
+
+<!--
+    Vista de los Modales
+-->
+<!------------------------------------------Modal Agregar y Editar----------------------------------------------->
+<div class="modal fade"
+     id="agregarSecc"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                 <div class="form-group" id="grupo__Id">
+                    <label for="num" class="col-form-label" id="idnum">Numero:</label>
+                    <input type="text" class="form-control" id="numSeccion" placeholder="Ingrese Numero" required />
+                    <label for="num" class="m-1 msj__label" id="lblNumError"></label>
+                </div> 
+                <form id="createForm">
+
+                    <div class="form-group" id="grupo__Nombre">
+                        <label for="nombre" class="col-form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" placeholder="Ingrese el Nombre" required />
+                        <label for="nombre" class="m-1 msj__label" id="lblNombreError"></label>
+                        <div class="invalid-feedback">
+                            El Nombre es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Cantidad">
+                        <label for="cantidad" class="col-form-label">Cantidad:</label>
+                        <input type="text" class="form-control" id="cantidad" placeholder="Ingrese la cantidad" required />
+                        <label for="cantidad" class="m-1 msj__label" id="lblCantidadError"></label>
+                        <div class="invalid-feedback">
+                            La cantidad es requerido.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" id="btnConfi"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Elininar----------------------------------------------->
+<div class="modal fade"
+     id="eliminarSeccion"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Mensaje de Confirmación</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="eliminarForm">
+
+                <input type="hidden" id="idEliminar" name="idEliminar" value="" />
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Datalles----------------------------------------------->
+<div class="modal fade"
+     id="detallesSeccion"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Detalles del Registro</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Numero:</strong> <span id="detalleNumero"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Nombre:</strong> <span id="detalleNombre"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Cantidad:</strong> <span id="detalleCantidad"></span></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrarDetalles" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        const d = document,
+
+            $renderBody = d.getElementById("renderBody");
+
+        // Event listener para clics en el cuerpo del documento
+        $renderBody.addEventListener("click", (e) => {
+
+            //-----------------------------------------------------Vista Crear
+            if (e.target.id === "viewCreatePage") {
+                
+                console.log("Creando");
+                
+                $("#agregarSecc .modal-title").text("Crear Seccion");
+               // $("#CedAdministrador").prop("disabled", false); // deshabilitar el campo de entrada
+                
+                $("#btnConfi").text("Crear"); 
+                $("#idnum").hide();
+                $("#numSeccion").hide();
+                $("#agregarSecc").modal("show");
+
+
+            }
+            //-----------------------------------------------------Vista Editar
+            if (e.target.id === "btnEditar") {
+                // Acción cuando se hace clic en el botón para abrir la vista de edición
+                let id = e.target.dataset.id;
+                console.log(id);
+                console.log("Editando");
+
+
+                // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                fetch("/Seccions/GetSeccion?id=" + id + "&verId=true")
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+
+                        // Actualiza los campos del formulario con los datos obtenidos
+                        if (result) {
+                            if (result.numSeccion) {
+                                d.getElementById("numSeccion").value = result.numSeccion;
+                            }
+                            if (result.nombreSeccion) {
+                                d.getElementById("nombre").value = result.nombreSeccion;
+                            }
+                            if (result.cantidadEstudiante) {
+                                d.getElementById("cantidad").value = result.cantidadEstudiante;
+                            }
+                        }
+
+
+
+                        // Cambia el título del modal a "Editar "
+                        $("#agregarSecc .modal-title").text("Editar Seccion");
+                        $("#numSeccion").prop("disabled", true);
+                        $("#btnConfi").text("Editar"); // Cambia el texto del botón a "Editar"
+                        $("#agregarSecc").modal("show");// Muestra el modal para crear una nueva entidad
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+            //-----------------------------------------------------Vista Detalles
+            if (e.target.id === "btnDetalles") {
+                // Acción cuando se hace clic en el botón para mostrar detalles (bitácora)
+                let id = e.target.dataset.id;
+                console.log("Detalles");
+                console.log(id);
+                // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                fetch("/Seccions/GetSeccion?id=" + id + "&verId=true")
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+
+                        // Actualiza los campos del formulario con los datos obtenidos
+                        if (result) {
+                            console.log(result);
+                            if (result.numSeccion) {
+                                d.getElementById("detalleNumero").textContent = result.numSeccion;
+                            }
+                            if (result.nombreSeccion) {
+                                d.getElementById("detalleNombre").textContent = result.nombreSeccion;
+                            }
+                            if (result.cantidadEstudiante) {
+                                d.getElementById("detalleCantidad").textContent = result.cantidadEstudiante;
+                            }
+                        }
+
+                        $("#detallesSeccion").modal("show");// Muestra el modal con los detalles (bitácora)
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+            //-----------------------------------------------------Vista Eliminar
+            if (e.target.id === "btnEliminar") {
+                // Acción cuando se hace clic en el botón para Eliminar un registro
+                let id = e.target.dataset.id;
+                console.log("Eliminando");
+                console.log(id);
+
+                $("#idEliminar").val(id);
+                $("#eliminarSeccion").modal("show");
+
+            }
+
+
+        });
+
+        console.log("arriba de submit");
+        // Event listener para envío de formularios
+        $renderBody.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("entro al submit");
+            console.log(e.target);
+            let title = $("#agregarSecc .modal-title").text();
+            console.log("Titulo:" + title);
+            //const id = d.getElementById("numSeccion").value;
+
+            //-----------------------------------------------------Crear Secc
+            if (title === "Crear Seccion") {
+                // Datos a enviar en la solicitud POST
+                const data = {
+                    
+                    NombreSeccion: d.getElementById("nombre").value,
+                    CantidadEstudiante: d.getElementById("cantidad").value,
+                };
+                console.log(data);
+
+                // Realizar la solicitud fetch
+                fetch("/Seccions/CrearSeccion", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#agregarSecc").modal("hide");
+                            d.getElementById("createForm").reset();
+                            console.log("Se agrego");
+                            alert('Bien! ' + result.mensaje); 
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se agrego");
+                            alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+
+            }
+
+            //-----------------------------------------------------Editar Secc
+            if (title === "Editar Seccion") {
+                console.log("Entro en editar");
+                const data = {
+                    NumSeccion: d.getElementById("numSeccion").value,
+                    NombreSeccion: d.getElementById("nombre").value,
+                    CantidadEstudiante: d.getElementById("cantidad").value,
+
+                };
+                console.log(data);
+                // Realizar la solicitud fetch
+                let id = d.getElementById("numSeccion").value;
+                console.log(id);
+                try {
+                    fetch(`/Seccions/ActualizarSeccion/${id}`, {
+                        method: "POST", // Cambiar a POST
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('La solicitud fetch no fue exitosa');
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            if (result.status == 1) {
+                                $("#agregarSecc").modal("hide");
+                                d.getElementById("createForm").reset();
+                                console.log("Se actualizó");
+                                alert('¡Bien! ' + result.mensaje);
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            } else {
+                                console.log("No se actualizó");
+                                alert('¡Oops! ' + result.mensaje);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error en la solicitud fetch:", error);
+                            alert('¡Oops! Hubo un error en la solicitud. Consulta la consola para obtener más detalles.');
+                        });
+                } catch (error) {
+                    console.error("Error en el bloque try:", error);
+                    alert('¡Oops! Hubo un error en el bloque try. Consulta la consola para obtener más detalles.');
+                }
+            }
+
+            //-----------------------------------------------------Eliminar Secc
+            if (e.target.id === "eliminarForm") {
+                console.log("Eliminando");
+
+                const id = d.getElementById("idEliminar").value;
+                console.log(id);
+                // Realizar la solicitud fetch para eliminar el
+                fetch(`/Seccions/EliminarSeccion?id=${id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#eliminarSeccion").modal("hide");
+                            console.log("Se eliminó");
+                            alert('Bien! ' + result.mensaje);
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                window.location.href = "/Seccions/Index";
+                            }, 2000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se eliminó");
+                            alert('Opps! ' + result.mensaje);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+
+
+
+        });
+        console.log("de bajo de submit");
+        //Funcion Buscar
+
+        $(d).ready(function () {
+            $("#buscar").on("keyup", function () {
+                var searchTerm = $(this).val();
+                // var pageNumber = 0; // Restablecer el número de página al buscar
+                if (searchTerm === "") {
+                    // Si no hay texto de búsqueda, obtener todos los registros
+                    window.location.reload();
+                }
+                else {
+                    $.ajax({
+                        url: "@Url.Action("Buscar", "Seccions")",
+                        type: "GET",
+                        data: { searchTerm: searchTerm },
+                        success: function (data) {
+                            if (data.seccion.length === 0) {
+                                // Si no hay registros, ocultar la tabla y mostrar el mensaje
+                                $("#resultados-busqueda").hide();
+                                $("#pagination-container").hide();
+                                $("#mensaje-vacio").show();
+
+                            } else {
+
+                                // Limpiar la tabla actual
+                                $("#resultados-busqueda tbody").empty();
+                                $("#pagination-container").hide();
+
+                                // Agregar los resultados a la tabla
+                                for (var i = 0; i < data.seccion.length; i++) {
+                                    var secc = data.seccion[i];
+                                    var row = "<tr>" +
+                                        "<td>" + secc.nombreSeccion + "</td>" +
+                                        "<td>" + secc.cantidadEstudiante + "</td>" +
+                                        "<td>" +
+                                        "<button style='background-color: #009688' type='button' id = 'btnEditar' data-id='" + secc.numSeccion + "' class='btn' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Editar</button> " +
+                                        "<button style='background-color: #009688' type='button' id = 'btnDetalles' data-id='" + secc.numSeccion + "' class='btn' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Details</button> " +
+                                        "<button style='background-color: #009688' type='button' id = 'btnEliminar' data-id='" + secc.numSeccion + "' class='btn' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Delete</button> " +
+                                        "</td>" +
+                                        "</tr>";
+
+                                    $("#resultados-busqueda tbody").append(row);
+                                }
+
+                                $("#resultados-busqueda").show();
+                                $("#mensaje-vacio").hide();
+
+
+                            }
+
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+}
