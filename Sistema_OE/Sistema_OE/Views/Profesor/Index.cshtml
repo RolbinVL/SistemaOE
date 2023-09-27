@@ -1,0 +1,617 @@
+﻿@model X.PagedList.IPagedList<Profesor>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common;
+
+@{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    ViewData["Title"] = "Profesores";
+}
+
+<div class="container margin-container p-4 glass" id="renderBody">
+    <div class="row fila">
+
+        <!--BOTON-->
+        <div class="row">
+            <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                <h3 class="d-flex justify-content-center">Profesores</h3>
+            </div>
+        <div >
+                
+                <div class="input-group col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar..."
+                           aria-label="Buscar..."
+                           aria-describedby="button-search"
+                           id="buscar" />
+                          
+                </div>
+
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12  offset-xl-10">
+                 
+                        <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
+                            <i class="material-icons left">add</i>Agregar</a>
+                      
+              
+
+                </div>
+               
+        </div>
+
+
+        </div>
+
+        
+
+        <!--Barra busqueda-->
+
+    </div>
+    <br />
+    <br />
+    <div id="resultados-busqueda" class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Apellidos
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Domicilio
+                    </th>
+
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pro in Model)
+                {
+                    <tr>
+                        <td id="Nomb">
+                            @pro.Nombre
+
+                        </td>
+                        <td id="Apell">
+                            @pro.Apellidos
+                        </td>
+                        <td id="Ema">
+                            @pro.Email
+                        </td>
+                        <td id="Domi">
+                            @pro.Domicilio
+                        </td>
+
+                        <td>
+                            <button type="button" id="btnEditar" data-id="@pro.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
+                               
+                          
+                            </button>
+                            <button type="button" id="btnDetalles" data-id="@pro.Cedula" class="waves-effect waves-light btn-small  teal lighten-1 ">
+                                <i class="material-icons large" aria-hidden="true">info</i>
+                                
+                            </button>
+                            <button type="button" id="btnEliminar" data-id="@pro.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">delete</i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="mensaje-vacio" class="text-center text-muted" style="display: none;">
+        No se encontraron registros.
+    </div>
+
+    <div id="pagination-container" class="pagination">
+        <ul class="pagination">
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = 0 })">&lt;&lt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber - 2 })">&lt;</a>
+                </li>
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { PagActual = i - 1 })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber })">&gt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageCount - 1 })">&gt;&gt;</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <br />
+    <br />
+    <br />
+</div>
+
+
+<!--
+    Vista de los Modales
+-->
+<!------------------------------------------Modal Agregar y Editar----------------------------------------------->
+<div class="modal fade"
+     id="agregarPro"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-content">
+                <div class="row">
+                    <form id="createForm">
+                        <div class="form-group" id="grupo__Id">
+                            <label for="cedula" class="col-form-label">Identificación:</label>
+                            <input name="id" type="number" class="validate" id="cedula">
+                        </div>
+              
+                        <div class="form-group" id="grupo__Nombre">
+                            <label for="nombre" class="col-form-label">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" placeholder="Ingrese el Nombre" required />
+                            <label for="nombre" class="m-1 msj__label" id="lblNombreError"></label>
+                            <div class="invalid-feedback">
+                                El Nombre es requerido.
+                            </div>
+                        </div>
+                        <div class="form-group" id="grupo__Apellidos">
+                            <label for="apellido" class="col-form-label">Apellidos:</label>
+                            <input type="text" class="form-control" id="apellido" placeholder="Ingrese Apellodos" required />
+                            <label for="apellido" class="m-1 msj__label" id="lblApellidoError"></label>
+                            <div class="invalid-feedback">
+                                El Apellido es requerido.
+                            </div>
+                        </div>
+                        <div class="form-group" id="grupo__Email">
+                            <label for="email" class="col-form-label">Email:</label>
+                            <input type="email" class="form-control" id="email" placeholder="name@example.com" required />
+                            <label for="nombre" class="m-1 msj__label" id="lblEmailError"></label>
+                            <div class="invalid-feedback">
+                                El Email es requerido.
+                            </div>
+                        </div>
+                        <div class="form-group" id="grupo__Domicilio">
+                            <label for="domicilio" class="col-form-label">Domicilio:</label>
+                            <textarea type="text" class="form-control" id="domicilio" placeholder="Ingrese el Domicilio" required></textarea>
+                            <label for="domicilio" class="m-1 msj__label" id="lblDomicilioError"></label>
+                            <div class="invalid-feedback">
+                                El Domicilio es requerido.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary" id="btnConfi"></button>
+                        </div>
+                    </form>
+
+
+                </div>
+              
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Elininar----------------------------------------------->
+<div class="modal fade"
+     id="eliminarProfesor"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Mensaje de Confirmación</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="eliminarForm">
+
+                <input type="hidden" id="idEliminar" name="idEliminar" value="" />
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Datalles----------------------------------------------->
+<div class="modal fade"
+     id="detallesProfesor"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Detalles del Registro</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Cedula:</strong> <span id="detalleCedula"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Nombre:</strong> <span id="detalleNombre"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Apellidos:</strong> <span id="detalleApellidos"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Email:</strong> <span id="detalleEmail"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Domicilio:</strong> <span id="detalleDomicilio"></span></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrarDetalles" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+        </div>
+   
+</div>
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script type="text/javascript">
+
+        const d = document,
+
+            $renderBody = d.getElementById("renderBody");
+
+        // Event listener para clics en el cuerpo del documento
+        $renderBody.addEventListener("click", (e) => {
+
+            //-----------------------------------------------------Vista Crear
+            if (e.target.id === "viewCreatePage") {
+                // Acción cuando se hace clic en el botón para abrir la vista de creación
+                console.log("Creando");
+                //  $("#createForm")[0].reset();
+                // Cambia el título del modal a "Crear Administrador"
+                $("#agregarPro .modal-title").text("Crear Profesor");
+
+                // $("#grupo__Id").hide();//oculta el div de id
+                $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
+                $("#agregarPro").modal("show");// Muestra el modal para crear una nueva entidad
+
+
+            }
+            //-----------------------------------------------------Vista Editar
+            if (e.target.id === "btnEditar") {
+                // Acción cuando se hace clic en el botón para abrir la vista de edición
+                let id = e.target.dataset.id;
+                console.log(id);
+                console.log("Editando");
+
+
+                // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                fetch("/Profesor/GetProfesor?id=" + id + "&verId=true")
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+
+                        // Actualiza los campos del formulario con los datos obtenidos
+                        if (result) {
+                            if (result.cedula) {
+                                d.getElementById("cedula").value = result.cedula;
+                            }
+                            if (result.nombre) {
+                                d.getElementById("nombre").value = result.nombre;
+                            }
+                            if (result.apellidos) {
+                                d.getElementById("apellido").value = result.apellidos;
+                            }
+                            if (result.email) {
+                                d.getElementById("email").value = result.email;
+                            }
+                            if (result.domicilio) {
+                                d.getElementById("domicilio").value = result.domicilio;
+                            }
+                        }
+
+
+
+                        // Cambia el título del modal a "Editar "
+                        $("#agregarPro .modal-title").text("Editar Profesor");
+                        $("#cedula").prop("disabled", true);
+                        $("#btnConfi").text("Editar"); // Cambia el texto del botón a "Editar"
+                        $("#agregarPro").modal("show");// Muestra el modal para crear una nueva entidad
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+            //-----------------------------------------------------Vista Detalles
+            if (e.target.id === "btnDetalles") {
+                // Acción cuando se hace clic en el botón para mostrar detalles (bitácora)
+                let id = e.target.dataset.id;
+                console.log("Detalles");
+                console.log(id);
+                // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                fetch("/Profesor/GetProfesor?id=" + id + "&verId=true")
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+
+                        // Actualiza los campos del formulario con los datos obtenidos
+                        if (result) {
+                            console.log(result);
+                            if (result.cedula) {
+                                d.getElementById("detalleCedula").textContent = result.cedula;
+                            }
+                            if (result.nombre) {
+                                d.getElementById("detalleNombre").textContent = result.nombre;
+                            }
+                            if (result.apellidos) {
+                                d.getElementById("detalleApellidos").textContent = result.apellidos;
+                            }
+                            if (result.email) {
+                                d.getElementById("detalleEmail").textContent = result.email;
+                            }
+                            if (result.domicilio) {
+                                d.getElementById("detalleDomicilio").textContent = result.domicilio;
+                            }
+                        }
+
+                        $("#detallesProfesor").modal("show");// Muestra el modal con los detalles (bitácora)
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+            //-----------------------------------------------------Vista Eliminar
+            if (e.target.id === "btnEliminar") {
+                // Acción cuando se hace clic en el botón para Eliminar un registro
+                let id = e.target.dataset.id;
+                console.log("Eliminando");
+                console.log(id);
+
+                $("#idEliminar").val(id);
+                $("#eliminarProfesor").modal("show");
+
+            }
+
+
+        });
+
+        console.log("arriba de submit");
+        // Event listener para envío de formularios
+        $renderBody.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("entro al submit");
+            console.log(e.target);
+            let title = $("#agregarPro .modal-title").text();
+            console.log("Titulo:" + title);
+            // const id = d.getElementById("numMateria").value;//
+
+            //-----------------------------------------------------Crear Mat
+            if (title === "Crear Profesor") {
+                // Datos a enviar en la solicitud POST
+                const data = {
+                    Cedula: d.getElementById("cedula").value,
+                    Nombre: d.getElementById("nombre").value,
+                    Apellidos: d.getElementById("apellido").value,
+                    Email: d.getElementById("email").value,
+                    Domicilio: d.getElementById("domicilio").value,
+                };
+                console.log(data);
+
+                // Realizar la solicitud fetch
+                fetch("/Profesor/CrearProfesor", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#agregarPro").modal("hide");
+                            d.getElementById("createForm").reset();
+                            console.log("Se agrego");
+                            alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se agrego");
+                            alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+
+            }
+
+            //-----------------------------------------------------Editar MAT
+            if (title === "Editar Profesor") {
+                console.log("Entro en editar");
+                const data = {
+                    Cedula: d.getElementById("cedula").value,
+                    Nombre: d.getElementById("nombre").value,
+                    Apellidos: d.getElementById("apellido").value,
+                    Email: d.getElementById("email").value,
+                    Domicilio: d.getElementById("domicilio").value,
+                };
+                console.log(data);
+                // Realizar la solicitud fetch
+                let id = d.getElementById("cedula").value;
+                console.log(id);
+                try {
+                    fetch(`/Profesor/ActualizarProfesor/${id}`, {
+                        method: "POST", // Cambiar a POST
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('La solicitud fetch no fue exitosa');
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            if (result.status == 1) {
+                                $("#agregarPro").modal("hide");
+                                d.getElementById("createForm").reset();
+                                console.log("Se actualizó");
+                                alert('¡Bien! ' + result.mensaje);
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            } else {
+                                console.log("No se actualizó");
+                                alert('¡Oops! ' + result.mensaje);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error en la solicitud fetch:", error);
+                            alert('¡Oops! Hubo un error en la solicitud. Consulta la consola para obtener más detalles.');
+                        });
+                } catch (error) {
+                    console.error("Error en el bloque try:", error);
+                    alert('¡Oops! Hubo un error en el bloque try. Consulta la consola para obtener más detalles.');
+                }
+            }
+
+            //-----------------------------------------------------Eliminar MAT
+            if (e.target.id === "eliminarForm") {
+                console.log("Eliminando");
+
+                const id = d.getElementById("idEliminar").value;
+                console.log(id);
+                // Realizar la solicitud fetch para eliminar el
+                fetch(`/Profesor/EliminarProfesor?id=${id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#eliminarProfesor").modal("hide");
+                            console.log("Se eliminó");
+                            alert('Bien! ' + result.mensaje);
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                window.location.href = "/Profesor/Index";
+                            }, 2000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se eliminó");
+                            alert('Opps! ' + result.mensaje);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+
+
+
+        });
+        console.log("de bajo de submit");
+        //Funcion Buscar
+
+        $(d).ready(function () {
+            $("#buscar").on("keyup", function () {
+                var searchTerm = $(this).val();
+                // var pageNumber = 0; // Restablecer el número de página al buscar
+                if (searchTerm === "") {
+                    // Si no hay texto de búsqueda, obtener todos los registros
+                    window.location.reload();
+                }
+                else {
+                    $.ajax({
+                        url: "@Url.Action("Buscar", "Profesor")",
+                        type: "GET",
+                        data: { searchTerm: searchTerm },
+                        success: function (data) {
+                            if (data.profesores.length === 0) {
+                                // Si no hay registros, ocultar la tabla y mostrar el mensaje
+                                $("#resultados-busqueda").hide();
+                                $("#pagination-container").hide();
+                                $("#mensaje-vacio").show();
+
+                            } else {
+
+                                // Limpiar la tabla actual
+                                $("#resultados-busqueda tbody").empty();
+                                $("#pagination-container").hide();
+
+                                // Agregar los resultados a la tabla
+                                for (var i = 0; i < data.profesores.length; i++) {
+                                    var pro = data.profesores[i];
+                                    var row = "<tr>" +
+                                      
+                                        "<td>" + pro.nombre + "</td>" +
+                                        "<td>" + pro.apellidos + "</td>" +
+                                        "<td>" + pro.email + "</td>" +
+                                        "<td>" + pro.domicilio + "</td>" +
+                                        "<td>" +
+                                        "<button type='button' id = 'btnEditar' data-id='" + pro.cedula + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>create</i></button> " +
+                                        "<button type='button' id = 'btnDetalles' data-id='" + pro.cedula + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>info</i></button> " +
+                                        "<button type='button' id = 'btnEliminar' data-id='" + pro.cedula + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>delete</i></button>" +
+                                        "</td>" +
+                                        "</tr>";
+
+                                    $("#resultados-busqueda tbody").append(row);
+                                }
+
+                                $("#resultados-busqueda").show();
+                                $("#mensaje-vacio").hide();
+
+
+                            }
+
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+
+}
