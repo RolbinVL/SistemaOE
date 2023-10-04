@@ -76,15 +76,15 @@
                         </td>
 
                         <td>
-                            <button type="button" id="btnEditar" data-id="@admin.IdAdministrativo" class="btn btn-warning">
+                            <button type="button" id="btnEditar" data-id="@admin.CedAdministrativo" class="btn btn-warning">
                                 <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
                                 Edit
                             </button>
-                            <button type="button" id="btnDetalles" data-id="@admin.IdAdministrativo" class="btn btn-primary">
+                            <button type="button" id="btnDetalles" data-id="@admin.CedAdministrativo" class="btn btn-primary">
                                 <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
                                 Details
                             </button>
-                            <button type="button" id="btnEliminar" data-id="@admin.IdAdministrativo" class="btn btn-danger">
+                            <button type="button" id="btnEliminar" data-id="@admin.CedAdministrativo" class="btn btn-danger">
                                 <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
                                 Delete
                             </button>
@@ -149,11 +149,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="form-group" id="grupo__Id">
-                    <label for="id" class="col-form-label">ID:</label>
-                    <input name="id" disabled type="number" class="form-control" id="id" readonly>
-                </div>
                 <form id="createForm">
+                    <div class="form-group" id="grupo__Id">
+                        <label for="id" class="col-form-label">ID:</label>
+                        <input name="cedAdministrativo" type="number" class="form-control" id="CedAdministrador" placeholder="Ingrese la cedula" required>
+                        <label for="id" class="m-1 msj__label" id="lblidError"></label>
+                        <div class="invalid-feedback">
+                            La cedula es requerida.
+                        </div>
+                    </div>
                     <div class="form-group" id="grupo__Nombre">
                         <label for="nombre" class="col-form-label">Nombre:</label>
                         <input type="text" class="form-control" id="nombre" placeholder="Ingrese el Nombre" required />
@@ -225,7 +229,7 @@
                     <p>¿Estás seguro de que deseas eliminar este registro?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" id="btnregresare" data-bs-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Eliminar</button>
                 </div>
             </form>
@@ -249,6 +253,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <p><strong>Cedula:</strong> <span id="detalleCedula"></span></p>
                 <p><strong>Nombre:</strong> <span id="detalleNombre"></span></p>
                 <p><strong>Apellidos:</strong> <span id="detalleApellidos"></span></p>
                 <p><strong>Email:</strong> <span id="detalleEmail"></span></p>
@@ -285,8 +290,8 @@
                  console.log("Creando");
                  $("#createForm")[0].reset();
                  // Cambia el título del modal a "Crear Administrador"
-                 $("#agregarAdm .modal-title").text("Crear Administrador");
-                 $("#grupo__Id").hide();//oculta el div de id
+                 $("#agregarAdm .modal-title").text("Crear Administrador")
+                $("#CedAdministrador").prop("disabled", false); // deshabilitar el campo de entrada
                  $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
                  $("#agregarAdm").modal("show");// Muestra el modal para crear una nueva entidad
 
@@ -301,17 +306,19 @@
 
 
                  // Realiza una solicitud fetch para obtener los datos de la entidad a editar
-                 fetch("/Administrativoes/GetAdministrador?id=" + id + "&verId=true")
+                 fetch("/Administrador/GetAdministrador?id=" + id + "&verId=true")
                      .then(response => response.json())
                      .then(result => {
                          console.log(result);
 
                          // Actualiza los campos del formulario con los datos obtenidos
                          if (result) {
-                             if (result.nombre) {
-                                 d.getElementById("id").value = result.idAdministrativo;
+                            console.log(result.cedAdministrativo);
+                            if (result.cedAdministrativo) {
+                                d.getElementById("CedAdministrador").value = result.cedAdministrativo;
                              }
                              if (result.nombre) {
+                                console.log(result.nombre);
                                  d.getElementById("nombre").value = result.nombre;
                              }
                              if (result.apellidos) {
@@ -331,7 +338,7 @@
 
                          // Cambia el título del modal a "Editar Administrador"
                          $("#agregarAdm .modal-title").text("Editar Administrador");
-                         $("#grupo__Id").hide();//oculta el div de id
+                         $("#CedAdministrador").prop("disabled", true); // deshabilitar el campo de entrada
                          $("#btnConfi").text("Editar"); // Cambia el texto del botón a "Editar"
                          $("#agregarAdm").modal("show");// Muestra el modal para crear una nueva entidad
                      })
@@ -346,13 +353,16 @@
                  console.log("Detalles");
                  console.log(id);
                  // Realiza una solicitud fetch para obtener los datos de la entidad a editar
-                 fetch("/Administrativoes/GetAdministrador?id=" + id + "&verId=true")
+                 fetch("/Administrador/GetAdministrador?id=" + id + "&verId=true")
                      .then(response => response.json())
                      .then(result => {
                          console.log(result);
 
                          // Actualiza los campos del formulario con los datos obtenidos
                          if (result) {
+                            if (result.cedAdministrativo) {
+                                d.getElementById("detalleCedula").textContent = result.cedAdministrativo;
+                            }
                              if (result.nombre) {
                                  d.getElementById("detalleNombre").textContent = result.nombre;
                              }
@@ -389,132 +399,133 @@
 
          // Event listener para envío de formularios
          $renderBody.addEventListener("submit", (e) => {
+            console.log("Entro al submit");
+            // Prevenir el comportamiento predeterminado de envío del formulario
+            e.preventDefault();
+            console.log(e.target);
+            let title = $("#agregarAdm .modal-title").text();
+            console.log("Titulo:" + title);
+            const id = d.getElementById("CedAdministrador").value;
 
-             // Prevenir el comportamiento predeterminado de envío del formulario
-             e.preventDefault();
-             console.log(e.target);
+            //-----------------------------------------------------Crear ADM
+            if (title === "Crear Administrador") {
+                // Datos a enviar en la solicitud POST
+                const data = {
+                    cedAdministrativo: id,
+                    Nombre: d.getElementById("nombre").value,
+                    Apellidos: d.getElementById("apellido").value,
+                    Email: d.getElementById("email").value,
+                    Domicilio: d.getElementById("domicilio").value,
+                    Password: d.getElementById("contraseña").value,
+                };
+                console.log(data);
 
-             //-----------------------------------------------------Crear ADM
-             let title = $("#agregarAdm .modal-title").text();
-             console.log(title);
+                // Realizar la solicitud fetch
+                fetch("/Administrador/CrearAdministrador", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#agregarAdm").modal("hide");
+                            d.getElementById("createForm").reset();
+                            console.log("Se agrego");
+                            alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se agrego");
+                            alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
 
+            }
 
-             if (e.target.id === "createForm" && title === "Crear Administrador") {
-                 // Datos a enviar en la solicitud POST
-                 const data = {
-                     Nombre: d.getElementById("nombre").value,
-                     Apellidos: d.getElementById("apellido").value,
-                     Email: d.getElementById("email").value,
-                     Domicilio: d.getElementById("domicilio").value,
-                     Password: d.getElementById("contraseña").value,
-                 };
-                 console.log(data);
+            //-----------------------------------------------------Editar ADM
+            if (title === "Editar Administrador") {
+                console.log("Entro en editar");
+                const data = {
+                    Id: d.getElementById("CedAdministrador").value,
+                    Nombre: d.getElementById("nombre").value,
+                    Apellidos: d.getElementById("apellido").value,
+                    Email: d.getElementById("email").value,
+                    Domicilio: d.getElementById("domicilio").value,
+                    Password: d.getElementById("contraseña").value,
+                };
+                console.log(data);
+                // Realizar la solicitud fetch
+                let id = d.getElementById("CedAdministrador").value;
 
-                 // Realizar la solicitud fetch
-                 fetch("/Administrativoes/CrearAdministrador", {
-                     method: "POST",
-                     headers: {
-                         "Content-Type": "application/json"
-                     },
-                     body: JSON.stringify(data)
-                 })
-                     .then(response => response.json())
-                     .then(result => {
-                         if (result.status == 1) {
-                             $("#agregarAdm").modal("hide");
-                             d.getElementById("createForm").reset();
-                             console.log("Se agrego");
-                             alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
-                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
-                             setTimeout(() => {
-                                 location.reload();
-                             }, 2000); // 2000 milisegundos = 2 segundo
-                         } else {
-                             console.log("No se agrego");
-                             alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
-                         }
-                     })
-                     .catch(error => {
-                         console.error("Error en la solicitud fetch:", error);
-                     });
+                fetch(`/Administrador/ActualizarAdministrador/${id}`, {
+                    method: "POST", // Cambiar a POST
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#agregarAdm").modal("hide");
+                            d.getElementById("createForm").reset();
+                            console.log("Se actualizó");
+                            alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se actualizó");
+                            alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
 
-             }
+            }
 
-             //-----------------------------------------------------Editar ADM
-             if (e.target.id === "createForm" && title === "Editar Administrador") {
-                 console.log("Entro en editar");
-                 const data = {
-                     Id: d.getElementById("id").value,
-                     Nombre: d.getElementById("nombre").value,
-                     Apellidos: d.getElementById("apellido").value,
-                     Email: d.getElementById("email").value,
-                     Domicilio: d.getElementById("domicilio").value,
-                     Password: d.getElementById("contraseña").value,
-                 };
-                 console.log(data);
-                 // Realizar la solicitud fetch
-                 let id = d.getElementById("id").value;
-                 fetch(`/Administrativoes/ActualizarAdministrador/${id}`, {
-                     method: "POST", // Cambiar a POST
-                     headers: {
-                         "Content-Type": "application/json"
-                     },
-                     body: JSON.stringify(data)
-                 })
-                     .then(response => response.json())
-                     .then(result => {
-                         if (result.status == 1) {
-                             $("#agregarAdm").modal("hide");
-                             d.getElementById("createForm").reset();
-                             console.log("Se actualizó");
-                             alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
-                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
-                             setTimeout(() => {
-                                 location.reload();
-                             }, 2000); // 2000 milisegundos = 2 segundo
-                         } else {
-                             console.log("No se actualizó");
-                             alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
-                         }
-                     })
-                     .catch(error => {
-                         console.error("Error en la solicitud fetch:", error);
-                     });
+            //-----------------------------------------------------Eliminar ADM
+            if (e.target.id === "eliminarForm") {
+                console.log("Eliminando");
 
-             }
+                const id = d.getElementById("idEliminar").value;
 
-             //-----------------------------------------------------Eliminar ADM
-             if (e.target.id === "eliminarForm") {
-                 console.log("Eliminando");
-
-                 let id = d.getElementById("idEliminar").value;
-
-                 // Realizar la solicitud fetch para eliminar el administrativo
-                 fetch(`/Administrativoes/EliminarAdministrativo?id=${id}`, {
-                     method: "POST",
-                     headers: {
-                         "Content-Type": "application/json"
-                     }
-                 })
-                     .then(response => response.json())
-                     .then(result => {
-                         if (result.status == 1) {
-                             $("#eliminarAdmistrativo").modal("hide");
-                             console.log("Se eliminó");
-                             alert('Bien! ' + result.mensaje);
-                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
-                             setTimeout(() => {
-                                 window.location.href = "/Administrativoes/Index";
-                             }, 2000); // 2000 milisegundos = 2 segundo
-                         } else {
-                             console.log("No se eliminó");
-                             alert('Opps! ' + result.mensaje);
-                         }
-                     })
-                     .catch(error => {
-                         console.error("Error en la solicitud fetch:", error);
-                     });
-             }
+                // Realizar la solicitud fetch para eliminar el administrativo
+                fetch(`/Administrador/EliminarAdministrativo?id=${id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#eliminarAdmistrativo").modal("hide");
+                            console.log("Se eliminó");
+                            alert('Bien! ' + result.mensaje);
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                window.location.href = "/Administrador/Index";
+                            }, 1000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se eliminó");
+                            alert('Opps! ' + result.mensaje);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
 
          });
 
@@ -530,7 +541,7 @@
                  }
                  else {
                       $.ajax({
-                          url: "@Url.Action("Buscar", "Administrativoes")",
+                          url: "@Url.Action("Buscar", "Administrador")",
                           type: "GET",
                           data: { searchTerm: searchTerm },
                           success: function (data) {
@@ -547,17 +558,17 @@
                                   $("#pagination-container").hide();
 
                                   // Agregar los resultados a la tabla
-                                  for (var i = 0; i < data.administrativos.length; i++) {
-                                      var admin = data.administrativos[i];
+                                for (var i = 0; i < data.administrativos.length; i++) {
+                                    var admin = data.administrativos[i];
                                       var row = "<tr>" +
                                           "<td>" + admin.nombre + "</td>" +
                                           "<td>" + admin.apellidos + "</td>" +
                                           "<td>" + admin.email + "</td>" +
                                           "<td>" + admin.domicilio + "</td>" +
                                           "<td>" +
-                                          "<a href='/Administrativoes/Edit/" + admin.idAdministrativo + "' class='btn btn-warning'>Edit</a> | " +
-                                          "<a href='/Administrativoes/Details/" + admin.idAdministrativo + "' class='btn btn-primary'>Details</a> | " +
-                                          "<a href='/Administrativoes/Delete/" + admin.idAdministrativo + "' class='btn btn-danger'>Delete</a>" +
+                                        "<button type='button' id = 'btnEditar' data-id='" + admin.cedAdministrativo + "' class='btn btn-warning' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Edit</button > " +
+                                        "<button type='button' id = 'btnDetalles' data-id='" + admin.cedAdministrativo + "' class='btn btn-primary' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Details</button > " +
+                                        "<button type='button' id = 'btnEliminar' data-id='" + admin.cedAdministrativo + "' class='btn btn-danger' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Delete</button > " +
                                           "</td>" +
                                           "</tr>";
 

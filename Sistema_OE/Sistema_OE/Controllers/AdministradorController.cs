@@ -3,9 +3,11 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 using Sistema_OE.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Sistema_OE.Controllers
 {
+    [Authorize]
     public class AdministradorController : Controller
     {
         #region Variables Globales
@@ -107,12 +109,12 @@ namespace Sistema_OE.Controllers
                 SqlParameter seAgregoParam = new SqlParameter("@seAgrego", System.Data.SqlDbType.TinyInt);
                 seAgregoParam.Direction = System.Data.ParameterDirection.Output;
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC paCrearAdministador @nombre, @apellidos, @email, @domicilio, @password, @msj OUTPUT, @seAgrego OUTPUT",
+                _dbContext.Database.ExecuteSqlRaw("EXEC paCrearAdministador @cedAdministrativo, @nombre, @apellidos, @email, @domicilio, @msj OUTPUT, @seAgrego OUTPUT",
+                    new SqlParameter("@cedAdministrativo", administrativo.CedAdministrativo),
                     new SqlParameter("@nombre", administrativo.Nombre),
                     new SqlParameter("@apellidos", administrativo.Apellidos),
                     new SqlParameter("@email", administrativo.Email),
                     new SqlParameter("@domicilio", administrativo.Domicilio),
-                    new SqlParameter("@password", administrativo.Password),
                     msjParam,
                     seAgregoParam
                 );
@@ -172,13 +174,12 @@ namespace Sistema_OE.Controllers
                     Direction = System.Data.ParameterDirection.Output
                 };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC paActualizarAdministador @idAdministrativo, @nombre, @apellidos, @email, @domicilio, @password, @msj output, @seModifico output",
-                    new SqlParameter("@idAdministrativo", id),
+                _dbContext.Database.ExecuteSqlRaw("EXEC paActualizarAdministador @cedAdministrativo, @nombre, @apellidos, @email, @domicilio, @password, @msj output, @seModifico output",
+                    new SqlParameter("@cedAdministrativo", id),
                     new SqlParameter("@nombre", administrativo.Nombre),
                     new SqlParameter("@apellidos", administrativo.Apellidos),
                     new SqlParameter("@email", administrativo.Email),
                     new SqlParameter("@domicilio", administrativo.Domicilio),
-                    new SqlParameter("@password", administrativo.Password),
                     outputMessage,
                     outputModified);
 
@@ -212,8 +213,8 @@ namespace Sistema_OE.Controllers
                     Direction = System.Data.ParameterDirection.Output
                 };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC paEliminarNomina @idAdministra, @msj output, @seElimino output",
-                    new SqlParameter("@idAdministra", id),
+                _dbContext.Database.ExecuteSqlRaw("EXEC paEliminarNomina @cedAdministrativo, @msj output, @seElimino output",
+                    new SqlParameter("@cedAdministrativo", id),
                     outputMessage,
                     outputDeleted);
 
