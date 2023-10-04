@@ -3,8 +3,10 @@
 @using X.PagedList.Web.Common;
 
 @{
+    Layout= "_layout";
     ViewData["Title"] = "Lista de Administrativos";
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 }
 <div class="container margin-container p-4 glass" id="renderBody">
@@ -12,27 +14,35 @@
 
         <!--BOTON-->
 
-        <div class="col-xl-3 col-lg-5 col-md-5 col-sm-12"><h3 class="d-flex justify-content-center">Administrador</h3></div>
+        <div class="row">
+            <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                <h3 class="d-flex justify-content-center">Profesor</h3>
+            </div>
+            <div>
 
-        <button type="button"
-                class="btn btn-primary col-xl-2 col-lg-2 col-md-2 col-sm-12"
-                id="viewCreatePage">
-            <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-            Agregar
-        </button>
+                <div class="input-group col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar..."
+                           aria-label="Buscar..."
+                           aria-describedby="button-search"
+                           id="buscar" />
+
+                </div>
+
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12  offset-xl-10">
+
+                    <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
+                        <i class="material-icons left">add</i>Agregar
+                    </a>
 
 
-        <!--Barra busqueda-->
-        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12  offset-xl-2 ">
-            <div class="input-group ">
-                <input type="text"
-                       class="form-control"
-                       placeholder="Buscar..."
-                       aria-label="Buscar..."
-                       aria-describedby="button-search"
-                       id="buscar" />
+
+                </div>
 
             </div>
+
+
         </div>
     </div>
     <br />
@@ -76,17 +86,14 @@
                         </td>
 
                         <td>
-                            <button type="button" id="btnEditar" data-id="@admin.CedAdministrativo" class="btn btn-warning">
-                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-                                Edit
+                            <button type="button" id="btnEditar" data-id="@admin.CedAdministrativo" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
                             </button>
-                            <button type="button" id="btnDetalles" data-id="@admin.CedAdministrativo" class="btn btn-primary">
-                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-                                Details
+                            <button type="button" id="btnDetalles" data-id="@admin.CedAdministrativo" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">info</i>
                             </button>
-                            <button type="button" id="btnEliminar" data-id="@admin.CedAdministrativo" class="btn btn-danger">
-                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-                                Delete
+                            <button type="button" id="btnEliminar" data-id="@admin.CedAdministrativo" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">delete</i>
                             </button>
                         </td>
                     </tr>
@@ -566,9 +573,9 @@
                                           "<td>" + admin.email + "</td>" +
                                           "<td>" + admin.domicilio + "</td>" +
                                           "<td>" +
-                                        "<button type='button' id = 'btnEditar' data-id='" + admin.cedAdministrativo + "' class='btn btn-warning' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Edit</button > " +
-                                        "<button type='button' id = 'btnDetalles' data-id='" + admin.cedAdministrativo + "' class='btn btn-primary' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Details</button > " +
-                                        "<button type='button' id = 'btnEliminar' data-id='" + admin.cedAdministrativo + "' class='btn btn-danger' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Delete</button > " +
+                                        "<button type='button' id = 'btnEditar' data-id='" + admin.cedAdministrativo + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>create</i></button> " +
+                                        "<button type='button' id = 'btnDetalles' data-id='" + admin.cedAdministrativo + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>info</i></button> " +
+                                        "<button type='button' id = 'btnEliminar' data-id='" + admin.cedAdministrativo + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>delete</i></button> " +
                                           "</td>" +
                                           "</tr>";
 

@@ -4,6 +4,8 @@
 
 @{
     ViewData["Title"] = "Lista de Seccion";
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 }
 
 
@@ -12,29 +14,42 @@
     <div class="row fila">
 
         <!--BOTON-->
+        <div class="row fila">
 
-        <div class="col-xl-3 col-lg-5 col-md-5 col-sm-12"><h3 class="d-flex justify-content-center">Seccion</h3></div>
+            <!--BOTON-->
+            <div class="row">
+                <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                    <h3 class="d-flex justify-content-center">Seccion</h3>
+                </div>
+                <div>
 
-        <button type="button"
-                class="btn  col-xl-2 col-lg-2 col-md-2 col-sm-12"
-                id="viewCreatePage" style="background-color: #009688">
-            <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-            Agregar
-        </button>
+                    <div class="input-group col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Buscar..."
+                               aria-label="Buscar..."
+                               aria-describedby="button-search"
+                               id="buscar" />
+
+                    </div>
+
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12  offset-xl-10">
+
+                        <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
+                            <i class="material-icons left">add</i>Agregar
+                        </a>
 
 
-        <!--Barra busqueda-->
-        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12  offset-xl-2 ">
-            <div class="input-group ">
-                <input type="text"
-                       class="form-control"
-                       placeholder="Buscar..."
-                       aria-label="Buscar..."
-                       aria-describedby="button-search"
-                       id="buscar" />
+
+                    </div>
+
+                </div>
+
 
             </div>
-        </div>
+
+        <!--Barra busqueda-->
+
     </div>
     <br />
     <br />
@@ -66,24 +81,14 @@
                         </td>
 
                         <td>
-                            <button type="button" id="btnEditar" data-id="@secc.NumSeccion" class="btn" style="background-color: #009688">
-                                <!-- <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>-->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                </svg>
+                            <button type="button" id="btnEditar" data-id="@secc.NumSeccion" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
                             </button>
-                            <button type="button" id="btnDetalles" data-id="@secc.NumSeccion" class="btn" style="background-color:#009688">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-text" viewBox="0 0 16 16">
-                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
-                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
-                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
-                                </svg>
+                            <button type="button" id="btnDetalles" data-id="@secc.NumSeccion" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">info</i>
                             </button>
-                            <button type="button" id="btnEliminar" data-id="@secc.NumSeccion" class="btn" style="background-color:#009688">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-                                </svg>
+                            <button type="button" id="btnEliminar" data-id="@secc.NumSeccion" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">delete</i>
                             </button>
                         </td>
                     </tr>
@@ -527,9 +532,9 @@
                                         "<td>" + secc.nombreSeccion + "</td>" +
                                         "<td>" + secc.cantidadEstudiante + "</td>" +
                                         "<td>" +
-                                        "<button style='background-color: #009688' type='button' id = 'btnEditar' data-id='" + secc.numSeccion + "' class='btn' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Editar</button> " +
-                                        "<button style='background-color: #009688' type='button' id = 'btnDetalles' data-id='" + secc.numSeccion + "' class='btn' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Details</button> " +
-                                        "<button style='background-color: #009688' type='button' id = 'btnEliminar' data-id='" + secc.numSeccion + "' class='btn' > <i class='fa fa-plus-circle mr-1' aria - hidden='true' > </i> Delete</button> " +
+                                        "<button type='button' id = 'btnEditar' data-id='" + secc.numSeccion + "'class='waves-effect waves-light btn-small  teal lighten-1' > <i class='material-icons large' aria-hidden='true'>create</i></button>  " +
+                                        "<button type='button' id = 'btnDetalles' data-id='" + secc.numSeccion + "'class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>info</i></button> " +
+                                        "<button type='button' id = 'btnEliminar' data-id='" + secc.numSeccion + "'class='waves-effect waves-light btn-small  teal lighten-1' > <i class='material-icons large' aria-hidden='true'>delete</i></button> " +
                                         "</td>" +
                                         "</tr>";
 

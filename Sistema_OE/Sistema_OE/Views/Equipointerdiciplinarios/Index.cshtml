@@ -1,12 +1,12 @@
-﻿@model X.PagedList.IPagedList<Materium>
+﻿@model X.PagedList.IPagedList<Equipointerdiciplinario>
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Web.Common;
 
-@{
 
+@{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    ViewData["Title"] = "Lista de Materia";
+    ViewData["Title"] = "Equipo";
 }
 
 
@@ -14,39 +14,41 @@
     <div class="row fila">
 
         <!--BOTON-->
-        <div class="row fila">
+        <div class="row">
+            <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                <h3 class="d-flex justify-content-center">Equipo Inter</h3>
+            </div>
+            <div>
 
-            <!--BOTON-->
-            <div class="row">
-                <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
-                    <h3 class="d-flex justify-content-center">Materia</h3>
-                </div>
-                <div>
-
-                    <div class="input-group col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
-                        <input type="text"
-                               class="form-control"
-                               placeholder="Buscar..."
-                               aria-label="Buscar..."
-                               aria-describedby="button-search"
-                               id="buscar" />
-
-                    </div>
-
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12  offset-xl-10">
-
-                        <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
-                            <i class="material-icons left">add</i>Agregar
-                        </a>
-
-
-
-                    </div>
+                <div class="input-group col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar..."
+                           aria-label="Buscar..."
+                           aria-describedby="button-search"
+                           id="buscar" />
 
                 </div>
 
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12  offset-xl-10">
+
+                    <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
+                        <i class="material-icons left">add</i>Agregar
+                    </a>
+
+
+
+                </div>
 
             </div>
+
+
+        </div>
+
+
+
+        <!--Barra busqueda-->
+
     </div>
     <br />
     <br />
@@ -57,29 +59,50 @@
                     <th>
                         Nombre
                     </th>
-                   
+                    <th>
+                        Especialidad
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Domicilio
+                    </th>
+
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var mat in Model)
+                @foreach (var equi in Model)
                 {
                     <tr>
                         <td id="Nomb">
-                            @mat.Nombre
+                            @equi.Nombre
 
+                        </td>
+                        <td id="Espe">
+                            @equi.Especialidad
+                        </td>
+                        <td id="Ema">
+                            @equi.Email
+                        </td>
+                        <td id="Domi">
+                            @equi.Domicilio
                         </td>
 
                         <td>
-                                <button type="button" id="btnEditar" data-id="@mat.NumMateria" class="waves-effect waves-light btn-small  teal lighten-1">
-                                    <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
-                                </button>
-                                <button type="button" id="btnDetalles" data-id="@mat.NumMateria" class="waves-effect waves-light btn-small  teal lighten-1">
-                                    <i class="material-icons large" aria-hidden="true">info</i>
-                                </button>
-                                <button type="button" id="btnEliminar" data-id="@mat.NumMateria" class="waves-effect waves-light btn-small  teal lighten-1">
-                                    <i class="material-icons large" aria-hidden="true">delete</i>
-                                </button>
+                            <button type="button" id="btnEditar" data-id="@equi.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
+
+
+                            </button>
+                            <button type="button" id="btnDetalles" data-id="@equi.Cedula" class="waves-effect waves-light btn-small  teal lighten-1 ">
+                                <i class="material-icons large" aria-hidden="true">info</i>
+
+                            </button>
+                            <button type="button" id="btnEliminar" data-id="@equi.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">delete</i>
+                            </button>
                         </td>
                     </tr>
                 }
@@ -120,12 +143,14 @@
     <br />
 </div>
 
+
 <!--
     Vista de los Modales
 -->
 <!------------------------------------------Modal Agregar y Editar----------------------------------------------->
+
 <div class="modal fade"
-     id="agregarMat"
+     id="agregarEqui"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
@@ -140,14 +165,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                 <div class="form-group" id="grupo__Id">
-                    <label for="num" class="col-form-label" id="idnum">Numero:</label>
-                    <input type="text" class="form-control" id="numMateria" placeholder="Ingrese Numero" required />
-                    <label for="num" class="m-1 msj__label" id="lblNumError"></label>
-                </div> 
-
                 <form id="createForm">
-                   
+                    <div class="form-group" id="grupo__Id">
+                        <label for="num" class="col-form-label" id="idced">Numero:</label>
+                        <input type="text" class="form-control" id="cedula" placeholder="Ingrese Numero" required />
+                        <label for="num" class="m-1 msj__label" id="lblCedulaError"></label>
+                    </div>
                     <div class="form-group" id="grupo__Nombre">
                         <label for="nombre" class="col-form-label">Nombre:</label>
                         <input type="text" class="form-control" id="nombre" placeholder="Ingrese el Nombre" required />
@@ -156,7 +179,31 @@
                             El Nombre es requerido.
                         </div>
                     </div>
-                   
+                    <div class="form-group" id="grupo__Especialidad">
+                        <label for="especialidad" class="col-form-label">Especialidad:</label>
+                        <input type="text" class="form-control" id="especialidad" placeholder="Ingrese Especialidad" required />
+                        <label for="especialidad" class="m-1 msj__label" id="lblEspecialidadoError"></label>
+                        <div class="invalid-feedback">
+                            El Especialidad es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Email">
+                        <label for="email" class="col-form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required />
+                        <label for="nombre" class="m-1 msj__label" id="lblEmailError"></label>
+                        <div class="invalid-feedback">
+                            El Email es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Domicilio">
+                        <label for="domicilio" class="col-form-label">Domicilio:</label>
+                        <textarea type="text" class="form-control" id="domicilio" placeholder="Ingrese el Domicilio" required></textarea>
+                        <label for="domicilio" class="m-1 msj__label" id="lblDomicilioError"></label>
+                        <div class="invalid-feedback">
+                            El Domicilio es requerido.
+                        </div>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" class="btn btn-primary" id="btnConfi"></button>
@@ -168,7 +215,7 @@
 </div>
 <!------------------------------------------Modal Elininar----------------------------------------------->
 <div class="modal fade"
-     id="eliminarMateria"
+     id="eliminarEquipo"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
@@ -198,7 +245,7 @@
 </div>
 <!------------------------------------------Modal Datalles----------------------------------------------->
 <div class="modal fade"
-     id="detallesMateria"
+     id="detallesEquipo"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
      tabindex="-1"
@@ -213,22 +260,36 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Numero:</strong> <span id="detalleNumero"></span></p>
+                <p><strong>Cedula:</strong> <span id="detalleCedula"></span></p>
 
             </div>
             <div class="modal-body">
                 <p><strong>Nombre:</strong> <span id="detalleNombre"></span></p>
- 
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Especialidad:</strong> <span id="detalleEspecialidad"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Email:</strong> <span id="detalleEmail"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Domicilio:</strong> <span id="detalleDomicilio"></span></p>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id="btnCerrarDetalles" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+
 </div>
 
-
 @section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script type="text/javascript">
 
         const d = document,
@@ -242,15 +303,15 @@
             if (e.target.id === "viewCreatePage") {
                 // Acción cuando se hace clic en el botón para abrir la vista de creación
                 console.log("Creando");
-              //  $("#createForm")[0].reset();
+                //  $("#createForm")[0].reset();
                 // Cambia el título del modal a "Crear Administrador"
-                $("#agregarMat .modal-title").text("Crear Materia");
-               
-               // $("#grupo__Id").hide();//oculta el div de id
+                $("#agregarEqui .modal-title").text("Crear Equipo");
+
+                // $("#grupo__Id").hide();//oculta el div de id
                 $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
-                $("#idnum").hide();
-                $("#numMateria").hide();
-                $("#agregarMat").modal("show");// Muestra el modal para crear una nueva entidad
+                $("#idced").show();
+                $("#cedula").show();
+                $("#agregarEqui").modal("show");// Muestra el modal para crear una nueva entidad
 
 
             }
@@ -263,28 +324,37 @@
 
 
                 // Realiza una solicitud fetch para obtener los datos de la entidad a editar
-                fetch("/Materia/GetMateria?id=" + id + "&verId=true")
+                fetch("/Equipointerdiciplinarios/GetEquipo?id=" + id + "&verId=true")
                     .then(response => response.json())
                     .then(result => {
                         console.log(result);
 
                         // Actualiza los campos del formulario con los datos obtenidos
                         if (result) {
-                            if (result.nombre) {
-                                d.getElementById("numMateria").value = result.numMateria;
+                            if (result.cedula) {
+                                d.getElementById("cedula").value = result.cedula;
                             }
                             if (result.nombre) {
                                 d.getElementById("nombre").value = result.nombre;
+                            }
+                            if (result.especialidad) {
+                                d.getElementById("especialidad").value = result.especialidad;
+                            }
+                            if (result.email) {
+                                d.getElementById("email").value = result.email;
+                            }
+                            if (result.domicilio) {
+                                d.getElementById("domicilio").value = result.domicilio;
                             }
                         }
 
 
 
                         // Cambia el título del modal a "Editar "
-                        $("#agregarMat .modal-title").text("Editar Materia");
-                        $("#numMateria").prop("disabled", true);
+                        $("#agregarEqui .modal-title").text("Editar Equipo");
+                        $("#cedula").prop("disabled", true);
                         $("#btnConfi").text("Editar"); // Cambia el texto del botón a "Editar"
-                        $("#agregarMat").modal("show");// Muestra el modal para crear una nueva entidad
+                        $("#agregarEqui").modal("show");// Muestra el modal para crear una nueva entidad
                     })
                     .catch(error => {
                         console.error("Error en la solicitud fetch:", error);
@@ -297,7 +367,7 @@
                 console.log("Detalles");
                 console.log(id);
                 // Realiza una solicitud fetch para obtener los datos de la entidad a editar
-                fetch("/Materia/GetMateria?id=" + id + "&verId=true")
+                fetch("/Equipointerdiciplinarios/GetEquipo?id=" + id + "&verId=true")
                     .then(response => response.json())
                     .then(result => {
                         console.log(result);
@@ -305,15 +375,24 @@
                         // Actualiza los campos del formulario con los datos obtenidos
                         if (result) {
                             console.log(result);
-                            if (result.numMateria) {
-                                d.getElementById("detalleNumero").textContent = result.numMateria;
+                            if (result.cedula) {
+                                d.getElementById("detalleCedula").textContent = result.cedula;
                             }
                             if (result.nombre) {
                                 d.getElementById("detalleNombre").textContent = result.nombre;
                             }
+                            if (result.especialidad) {
+                                d.getElementById("detalleEspecialidad").textContent = result.especialidad;
+                            }
+                            if (result.email) {
+                                d.getElementById("detalleEmail").textContent = result.email;
+                            }
+                            if (result.domicilio) {
+                                d.getElementById("detalleDomicilio").textContent = result.domicilio;
+                            }
                         }
 
-                        $("#detallesMateria").modal("show");// Muestra el modal con los detalles (bitácora)
+                        $("#detallesEquipo").modal("show");// Muestra el modal con los detalles (bitácora)
                     })
                     .catch(error => {
                         console.error("Error en la solicitud fetch:", error);
@@ -327,7 +406,7 @@
                 console.log(id);
 
                 $("#idEliminar").val(id);
-                $("#eliminarMateria").modal("show");
+                $("#eliminarEquipo").modal("show");
 
             }
 
@@ -340,20 +419,24 @@
             e.preventDefault();
             console.log("entro al submit");
             console.log(e.target);
-            let title = $("#agregarMat .modal-title").text();
+            let title = $("#agregarEqui .modal-title").text();
             console.log("Titulo:" + title);
-           // const id = d.getElementById("numMateria").value;//
+            // const id = d.getElementById("numMateria").value;//
 
-            //-----------------------------------------------------Crear Mat
-            if (title === "Crear Materia") {
+            //-----------------------------------------------------Crear Equi
+            if (title === "Crear Equipo") {
                 // Datos a enviar en la solicitud POST
                 const data = {
+                    Cedula: d.getElementById("cedula").value,
                     Nombre: d.getElementById("nombre").value,
+                    Especialidad: d.getElementById("especialidad").value,
+                    Email: d.getElementById("email").value,
+                    Domicilio: d.getElementById("domicilio").value,
                 };
                 console.log(data);
 
-                // Realizar la solicitud fetch
-                fetch("/Materia/CrearMateria", {
+                // Realizar la solicitud fetch Equipointerdiciplinarios/GetEquipo
+                fetch("/Equipointerdiciplinarios/CrearEquipo", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -363,7 +446,7 @@
                     .then(response => response.json())
                     .then(result => {
                         if (result.status == 1) {
-                            $("#agregarMat").modal("hide");
+                            $("#agregarEqui").modal("hide");
                             d.getElementById("createForm").reset();
                             console.log("Se agrego");
                             alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
@@ -383,18 +466,21 @@
             }
 
             //-----------------------------------------------------Editar MAT
-            if (title === "Editar Materia") {
+            if (title === "Editar Equipo") {
                 console.log("Entro en editar");
                 const data = {
-                    numMateria: d.getElementById("numMateria").value,
+                    Cedula: d.getElementById("cedula").value,
                     Nombre: d.getElementById("nombre").value,
+                    Especialidad: d.getElementById("especialidad").value,
+                    Email: d.getElementById("email").value,
+                    Domicilio: d.getElementById("domicilio").value
                 };
                 console.log(data);
-                // Realizar la solicitud fetch
-                let id = d.getElementById("numMateria").value;
+                // Realizar la solicitud fetch Equipointerdiciplinarios
+                let id = d.getElementById("cedula").value;
                 console.log(id);
                 try {
-                    fetch(`/Materia/ActualizarMateria/${id}`, {
+                    fetch(`/Equipointerdiciplinarios/ActualizarEquipo/${id}`, {
                         method: "POST", // Cambiar a POST
                         headers: {
                             "Content-Type": "application/json"
@@ -409,7 +495,7 @@
                         })
                         .then(result => {
                             if (result.status == 1) {
-                                $("#agregarMat").modal("hide");
+                                $("#agregarEqui").modal("hide");
                                 d.getElementById("createForm").reset();
                                 console.log("Se actualizó");
                                 alert('¡Bien! ' + result.mensaje);
@@ -437,8 +523,8 @@
 
                 const id = d.getElementById("idEliminar").value;
                 console.log(id);
-                // Realizar la solicitud fetch para eliminar el
-                fetch(`/Materia/EliminarMateria?id=${id}`, {
+                // Realizar la solicitud fetch para eliminar el Equipointerdiciplinarios
+                fetch(`/Equipointerdiciplinarios/EliminarEquipo?id=${id}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -447,12 +533,12 @@
                     .then(response => response.json())
                     .then(result => {
                         if (result.status == 1) {
-                            $("#eliminarMateria").modal("hide");
+                            $("#eliminarEquipo").modal("hide");
                             console.log("Se eliminó");
                             alert('Bien! ' + result.mensaje);
                             // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
                             setTimeout(() => {
-                                window.location.href = "/Materia/Index";
+                                window.location.href = "/Equipointerdiciplinarios/Index";
                             }, 2000); // 2000 milisegundos = 2 segundo
                         } else {
                             console.log("No se eliminó");
@@ -464,7 +550,7 @@
                     });
             }
 
-            
+
 
         });
         console.log("de bajo de submit");
@@ -480,11 +566,11 @@
                 }
                 else {
                     $.ajax({
-                        url: "@Url.Action("Buscar", "Materia")",
+                        url: "@Url.Action("Buscar", "Equipointerdiciplinarios")",
                         type: "GET",
                         data: { searchTerm: searchTerm },
                         success: function (data) {
-                            if (data.materia.length === 0) {
+                            if (data.equipointerdiciplinario.length === 0) {
                                 // Si no hay registros, ocultar la tabla y mostrar el mensaje
                                 $("#resultados-busqueda").hide();
                                 $("#pagination-container").hide();
@@ -497,16 +583,18 @@
                                 $("#pagination-container").hide();
 
                                 // Agregar los resultados a la tabla
-                                for (var i = 0; i < data.materia.length; i++) {
-                                    var mat = data.materia[i];
+                                for (var i = 0; i < data.equipointerdiciplinario.length; i++) {
+                                    var equi = data.equipointerdiciplinario[i];
                                     var row = "<tr>" +
-                                        "<td>" + mat.nombre + "</td>" +
+
+                                        "<td>" + equi.nombre + "</td>" +
+                                        "<td>" + equi.especialidad + "</td>" +
+                                        "<td>" + equi.email + "</td>" +
+                                        "<td>" + equi.domicilio + "</td>" +
                                         "<td>" +
-                                        
-                                            "<button type='button' id = 'btnEditar' data-id='" + mat.numMateria + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>create</i></button> " +
-                                            "<button type='button' id = 'btnDetalles' data-id='" + mat.numMateria + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>info</i></button> " +
-                                            "<button type='button' id = 'btnEliminar' data-id='" + mat.numMateria + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>delete</i></button> " +
-                                        
+                                        "<button type='button' id = 'btnEditar' data-id='" + equi.cedula + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>create</i></button> " +
+                                        "<button type='button' id = 'btnDetalles' data-id='" + equi.cedula + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>info</i></button> " +
+                                        "<button type='button' id = 'btnEliminar' data-id='" + equi.cedula + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>delete</i></button>" +
                                         "</td>" +
                                         "</tr>";
 
@@ -526,6 +614,5 @@
         });
 
     </script>
+
 }
-
-
