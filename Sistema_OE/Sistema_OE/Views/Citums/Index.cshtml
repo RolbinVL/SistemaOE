@@ -1,0 +1,702 @@
+﻿@model X.PagedList.IPagedList<Citum>
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common;
+
+@{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    ViewData["Title"] = "Citas";
+}
+
+<div class="container margin-container p-4 glass" id="renderBody">
+    <div class="row fila">
+
+        <!--BOTON-->
+        <div class="row">
+            <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                <h3 class="d-flex justify-content-center">Citas</h3>
+            </div>
+            <div>
+
+                <div class="input-group col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar..."
+                           aria-label="Buscar..."
+                           aria-describedby="button-search"
+                           id="buscar" />
+
+                </div>
+
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12  offset-xl-10">
+
+                    <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
+                        <i class="material-icons left">add</i>Agregar
+                    </a>
+
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!--Barra busqueda-->
+
+    </div>
+    <br />
+    <br />
+    <div id="resultados-busqueda" class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Fecha asignada
+                    </th>
+                    <th>
+                        Motivo
+                    </th>
+                    <th>
+                        Tiempo
+                    </th>
+                    <th>
+                        Estado
+                    </th>
+
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cit in Model)
+                {
+                    <tr>
+                        <td id="Fech">
+                            @cit.FechaAsignada
+
+                        </td>
+                        <td id="Moti">
+                            @cit.Motivo
+                        </td>
+                        <td id="Tiem">
+                            @cit.Tiempo
+                        </td>
+                        <td id="Est">
+                            @cit.Estado
+                        </td>
+
+                        <td>
+                            <button type="button" id="btnEditar" data-id="@cit.NumCita" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
+
+
+                            </button>
+                            <button type="button" id="btnDetalles" data-id="@cit.NumCita" class="waves-effect waves-light btn-small  teal lighten-1 ">
+                                <i class="material-icons large" aria-hidden="true">info</i>
+
+                            </button>
+                            <button type="button" id="btnEliminar" data-id="@cit.NumCita" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">delete</i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="mensaje-vacio" class="text-center text-muted" style="display: none;">
+        No se encontraron registros.
+    </div>
+
+    <div id="pagination-container" class="pagination">
+        <ul class="pagination">
+            @if (Model.PageCount > 1)
+            {
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = 0 })">&lt;&lt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber - 2 })">&lt;</a>
+                </li>
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { PagActual = i - 1 })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageNumber })">&gt;</a>
+                </li>
+                <li class="page-item @(Model.PageNumber == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { PagActual = Model.PageCount - 1 })">&gt;&gt;</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <br />
+    <br />
+    <br />
+</div>
+
+<!--
+    Vista de los Modales
+-->
+<!------------------------------------------Modal Agregar y Editar----------------------------------------------->
+<div class="modal fade"
+     id="agregarCit"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="grupo__Id">
+                    <label for="num" class="col-form-label" id="idnum">Numero:</label>
+                    <input type="text" class="form-control" id="numCita" placeholder="Ingrese Numero" required />
+                    <label for="num" class="m-1 msj__label" id="lblNumError"></label>
+                </div>
+                <form id="createForm">
+
+                    <div class="form-group" id="grupo__FechaAsignada">
+                        <label for="fechaAsignada" class="datepicker">Fecha:</label>
+                        <input type="text" class="datepicker" id="fechaAsignada" placeholder="Ingrese la fecha" required />
+                        <label for="fechaAsignada" class="m-1 msj__label" id="lblFechaAsignadaError"></label>
+                        <div class="invalid-feedback">
+                            La fecha es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Estudiante">
+                        <label for="estudiante" class="col-form-label">Estudiante:</label>
+                        <input type="text" class="form-control" id="estudiante" placeholder="Ingrese el estudiante" required />
+                        <label for="estudiante" class="m-1 msj__label" id="lblEstudianteError"></label>
+                        <div class="invalid-feedback">
+                            El estudiante es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Admi">
+                        <label for="admi" class="col-form-label">Administrativo:</label>
+                        <input type="text" class="form-control" id="admi" placeholder="Ingrese el administrativo" required />
+                        <label for="admi" class="m-1 msj__label" id="lblAdmiError"></label>
+                        <div class="invalid-feedback">
+                            El administrativo es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Equi">
+                        <label for="equi" class="col-form-label">Equipo Inter:</label>
+                        <input type="text" class="form-control" id="equi" placeholder="Ingrese el equipo inter" required />
+                        <label for="equi" class="m-1 msj__label" id="lblEquiError"></label>
+                        <div class="invalid-feedback">
+                            El equipo es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Motivo">
+                        <label for="motivo" class="col-form-label">Motivo:</label>
+                        <input type="text" class="form-control" id="motivo" placeholder="Ingrese el motivo" required />
+                        <label for="motivo" class="m-1 msj__label" id="lblMotivoError"></label>
+                        <div class="invalid-feedback">
+                            El motivo es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Tiempo">
+                        <label for="tiempo" class="col-form-label">Tiempo:</label>
+                        <input type="text" class="form-control" id="tiempo" placeholder="Ingrese el Tiempo" required />
+                        <label for="tiempo" class="m-1 msj__label" id="lblTiempoError"></label>
+                        <div class="invalid-feedback">
+                            El Tiempo es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Tipo">
+                        <label for="tipo" class="col-form-label">Tipo:</label>
+                        <input type="text" class="form-control" id="tipo" placeholder="Ingrese el tipo" required />
+                        <label for="tipo" class="m-1 msj__label" id="lblTipoError"></label>
+                        <div class="invalid-feedback">
+                            El tipo es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Estado">
+                        <label for="estado" class="col-form-label">Estado:</label>
+                        <input type="text" class="form-control" id="estado" placeholder="Ingrese el estado" required />
+                        <label for="estado" class="m-1 msj__label" id="lblEstadoError"></label>
+                        <div class="invalid-feedback">
+                            El estadoo es requerido.
+                        </div>
+                    </div>
+                    <div class="form-group" id="grupo__Observacion">
+                        <label for="observacion" class="col-form-label">Observacion:</label>
+                        <input type="text" class="form-control" id="observacion" placeholder="Ingrese la observación" required />
+                        <label for="observacion" class="m-1 msj__label" id="lblObservacionError"></label>
+                        <div class="invalid-feedback">
+                            La observación es requerido.
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary" id="btnConfi"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Elininar----------------------------------------------->
+<div class="modal fade"
+     id="eliminarCita"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Mensaje de Confirmación</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="eliminarForm">
+
+                <input type="hidden" id="idEliminar" name="idEliminar" value="" />
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este registro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!------------------------------------------Modal Datalles----------------------------------------------->
+<div class="modal fade"
+     id="detallesCita"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Detalles del Registro</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Numero cita:</strong> <span id="detalleNumero"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Estudiante:</strong> <span id="detalleEstudiante"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Administrativo:</strong> <span id="detalleAdministrativo"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Equipo Inter:</strong> <span id="detalleEqui"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Fecha:</strong> <span id="detalleFecha"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Motivo:</strong> <span id="detalleMotivo"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Tiempo:</strong> <span id="detalleTiempo"></span></p>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tipo:</strong> <span id="detalleTipo"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Estado:</strong> <span id="detalleEstado"></span></p>
+
+            </div>
+            <div class="modal-body">
+                <p><strong>Observacion:</strong> <span id="detalleObservacion"></span></p>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btnCerrarDetalles" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript">
+
+        const d = document,
+
+            $renderBody = d.getElementById("renderBody");
+
+        // Event listener para clics en el cuerpo del documento
+        $renderBody.addEventListener("click", (e) => {
+
+            //-----------------------------------------------------Vista Crear
+            if (e.target.id === "viewCreatePage") {
+                // Acción cuando se hace clic en el botón para abrir la vista de creación
+                console.log("Creando");
+                //  $("#createForm")[0].reset();
+                // Cambia el título del modal a "Crear Administrador"
+                $("#agregarCit .modal-title").text("Crear Cita");
+
+                // $("#grupo__Id").hide();//oculta el div de id
+                $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
+                $("#idnum").hide();
+                $("#numCita").hide();
+                $("#agregarCit").modal("show");// Muestra el modal para crear una nueva entidad
+
+
+            }
+            //-----------------------------------------------------Vista Editar
+            if (e.target.id === "btnEditar") {
+                // Acción cuando se hace clic en el botón para abrir la vista de edición
+                let id = e.target.dataset.id;
+                console.log(id);
+                console.log("Editando");
+
+
+                // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                fetch("/Citums/GetCita?id=" + id + "&verId=true")
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+
+                        // Actualiza los campos del formulario con los datos obtenidos
+                        if (result) {
+                            if (result.numCita) {
+                                d.getElementById("numCita").value = result.numCita;
+                            }
+                            if (result.fechaAsignada) {
+                                d.getElementById("fechaAsignada").value = result.fechaAsignada;
+                            }
+                            if (result.equipoInterdiciplinario) {
+                                d.getElementById("equipoInterdiciplinario").value = result.equipoInterdiciplinario;
+                            }
+                            if (result.motivo) {
+                                d.getElementById("motivo").value = result.motivo;
+                            }
+                            if (result.tiempo) {
+                                d.getElementById("tiempo").value = result.tiempo;
+                            }
+                            if (result.tipo) {
+                                d.getElementById("tipo").value = result.tipo;
+                            }
+                            if (result.estado) {
+                                d.getElementById("estado").value = result.estado;
+                            }
+                            if (result.observacion) {
+                                d.getElementById("observacion").value = result.observacion;
+                            }
+                        }
+
+
+
+                        // Cambia el título del modal a "Editar "
+                        $("#agregarCit .modal-title").text("Editar Cita");
+                        $("#numCita").prop("disabled", true);
+                        $("#btnConfi").text("Editar"); // Cambia el texto del botón a "Editar"
+                        $("#agregarCit").modal("show");// Muestra el modal para crear una nueva entidad
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+            //-----------------------------------------------------Vista Detalles
+            if (e.target.id === "btnDetalles") {
+                // Acción cuando se hace clic en el botón para mostrar detalles (bitácora)
+                let id = e.target.dataset.id;
+                console.log("Detalles");
+                console.log(id);
+                // Realiza una solicitud fetch para obtener los datos de la entidad a editar
+                fetch("/Citum/GetCita?id=" + id + "&verId=true")
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result);
+
+                        // Actualiza los campos del formulario con los datos obtenidos
+                        if (result) {
+                            console.log(result);
+                            if (result.numCita) {
+                                d.getElementById("detalleNumero").textContent = result.numCita;
+                            }
+                            if (result.estudiante) {
+                                d.getElementById("detalleEstudiante").textContent = result.estudiante;
+                            }
+                            if (result.administrativo) {
+                                d.getElementById("detalleAdministrativo").textContent = result.administrativo;
+                            }
+                            if (result.equipoInterdiciplinario) {
+                                d.getElementById("detalleEqui").textContent = result.equipoInterdiciplinario;
+                            }
+                            if (result.fechaAsignada) {
+                                d.getElementById("detalleFecha").textContent = result.fechaAsignada;
+                            }
+
+                            if (result.motivo) {
+                                d.getElementById("detalleMotivo").textContent = result.motivo;
+                            }
+                            if (result.tiempo) {
+                                d.getElementById("detalleTiempo").textContent = result.tiempo;
+                            }
+                            if (result.tipo) {
+                                d.getElementById("detalleTipo").textContent = result.tipo;
+                            }
+                            if (result.estado) {
+                                d.getElementById("detalleEstado").textContent = result.estado;
+                            }
+                            if (result.observacion) {
+                                d.getElementById("detalleObservacion").textContent = result.observacion;
+                            }
+                        }
+
+                        $("#detallesCita").modal("show");// Muestra el modal con los detalles (bitácora)
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+            //-----------------------------------------------------Vista Eliminar
+            if (e.target.id === "btnEliminar") {
+                // Acción cuando se hace clic en el botón para Eliminar un registro
+                let id = e.target.dataset.id;
+                console.log("Eliminando");
+                console.log(id);
+
+                $("#idEliminar").val(id);
+                $("#eliminarCita").modal("show");
+
+            }
+
+
+        });
+
+        console.log("arriba de submit");
+        // Event listener para envío de formularios
+        $renderBody.addEventListener("submit", (e) => {
+            e.preventDefault();
+            console.log("entro al submit");
+            console.log(e.target);
+            let title = $("#agregarCit .modal-title").text();
+            console.log("Titulo:" + title);
+            // const id = d.getElementById("numMateria").value;//
+
+            //-----------------------------------------------------Crear Cita
+            if (title === "Crear Cita") {
+                // Datos a enviar en la solicitud POST
+                const data = {
+                    FechaAsignada: d.getElementById("fecha").value,
+                    Motivo: d.getElementById("motivo").value,
+                    Tiempo: d.getElementById("tiempo").value,
+                    Tipo: d.getElementById("tipo").value,
+                    Estado: d.getElementById("estado").value,
+                    Observacion: d.getElementById("observacion").value,
+
+                };
+                console.log(data);
+
+                // Realizar la solicitud fetch
+                fetch("/Citums/CrearCita", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#agregarCit").modal("hide");
+                            d.getElementById("createForm").reset();
+                            console.log("Se agrego");
+                            alert('Bien! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se agrego");
+                            alert('Opps! ' + result.mensaje); // Utiliza la función swal de SweetAlert
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+
+            }
+
+            //-----------------------------------------------------Editar MAT
+            if (title === "Editar Cita") {
+                console.log("Entro en editar");
+                const data = {
+                    numCita: d.getElementById("numCita").value,
+                    FechaAsignada: d.getElementById("fecha").value,
+                    Motivo: d.getElementById("motivo").value,
+                    Tiempo: d.getElementById("tiempo").value,
+                    Tipo: d.getElementById("tipo").value,
+                    Estado: d.getElementById("estado").value,
+                    Observacion: d.getElementById("observacion").value,
+                };
+                console.log(data);
+                // Realizar la solicitud fetch
+                let id = d.getElementById("numCita").value;
+                console.log(id);
+                try {
+                    fetch(`/Citums/ActualizarCita/${id}`, {
+                        method: "POST", // Cambiar a POST
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('La solicitud fetch no fue exitosa');
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            if (result.status == 1) {
+                                $("#agregarCit").modal("hide");
+                                d.getElementById("createForm").reset();
+                                console.log("Se actualizó");
+                                alert('¡Bien! ' + result.mensaje);
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 2000);
+                            } else {
+                                console.log("No se actualizó");
+                                alert('¡Oops! ' + result.mensaje);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error en la solicitud fetch:", error);
+                            alert('¡Oops! Hubo un error en la solicitud. Consulta la consola para obtener más detalles.');
+                        });
+                } catch (error) {
+                    console.error("Error en el bloque try:", error);
+                    alert('¡Oops! Hubo un error en el bloque try. Consulta la consola para obtener más detalles.');
+                }
+            }
+
+            //-----------------------------------------------------Eliminar MAT
+            if (e.target.id === "eliminarForm") {
+                console.log("Eliminando");
+
+                const id = d.getElementById("idEliminar").value;
+                console.log(id);
+                // Realizar la solicitud fetch para eliminar el
+                fetch(`/Citums/EliminarCita?id=${id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.status == 1) {
+                            $("#eliminarCita").modal("hide");
+                            console.log("Se eliminó");
+                            alert('Bien! ' + result.mensaje);
+                            // Recargar la página después de un breve retraso para que el usuario pueda ver el mensaje de éxito
+                            setTimeout(() => {
+                                window.location.href = "/Citums/Index";
+                            }, 2000); // 2000 milisegundos = 2 segundo
+                        } else {
+                            console.log("No se eliminó");
+                            alert('Opps! ' + result.mensaje);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en la solicitud fetch:", error);
+                    });
+            }
+
+
+
+        });
+        console.log("de bajo de submit");
+        //Funcion Buscar
+
+        $(d).ready(function () {
+            $("#buscar").on("keyup", function () {
+                var searchTerm = $(this).val();
+                // var pageNumber = 0; // Restablecer el número de página al buscar
+                if (searchTerm === "") {
+                    // Si no hay texto de búsqueda, obtener todos los registros
+                    window.location.reload();
+                }
+                else {
+                    $.ajax({
+                        url: "@Url.Action("Buscar", "Citums")",
+                        type: "GET",
+                        data: { searchTerm: searchTerm },
+                        success: function (data) {
+                            if (data.citum.length === 0) {
+                                // Si no hay registros, ocultar la tabla y mostrar el mensaje
+                                $("#resultados-busqueda").hide();
+                                $("#pagination-container").hide();
+                                $("#mensaje-vacio").show();
+
+                            } else {
+
+                                // Limpiar la tabla actual
+                                $("#resultados-busqueda tbody").empty();
+                                $("#pagination-container").hide();
+
+                                // Agregar los resultados a la tabla
+                                for (var i = 0; i < data.citum.length; i++) {
+                                    var cit = data.citum[i];
+                                    var row = "<tr>" +
+                                        "<td>" + cit.fecha + "</td>" +
+                                        "<td>" + cit.motivo + "</td>" +
+                                        "<td>" + cit.tipo + "</td>" +
+                                        "<td>" + cit.estado + "</td>" +
+                                        "<td>" +
+
+                                        "<button type='button' id = 'btnEditar' data-id='" + cit.numCita + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>create</i></button> " +
+                                        "<button type='button' id = 'btnDetalles' data-id='" + cit.numCita + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>info</i></button> " +
+                                        "<button type='button' id = 'btnEliminar' data-id='" + cit.numCita + "' class='waves-effect waves-light btn-small  teal lighten-1 ' > <i class='material-icons large' aria-hidden='true'>delete</i></button> " +
+
+                                        "</td>" +
+                                        "</tr>";
+
+                                    $("#resultados-busqueda tbody").append(row);
+                                }
+
+                                $("#resultados-busqueda").show();
+                                $("#mensaje-vacio").hide();
+
+
+                            }
+
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+}
