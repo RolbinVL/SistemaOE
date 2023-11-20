@@ -83,17 +83,14 @@
                         </td>
 
                         <td>
-                            <button type="button" id="btnEditar" data-id="@estu.Cedula" class="btn btn-warning">
-                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-                                Edit
+                            <button type="button" id="btnEditar" data-id="@estu.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <a class="material-icons large" aria-hidden="true"> <i>create</i></a>
                             </button>
-                            <button type="button" id="btnDetalles" data-id="@estu.Cedula" class="btn btn-primary">
-                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-                                Details
+                            <button type="button" id="btnDetalles" data-id="@estu.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">info</i>
                             </button>
-                            <button type="button" id="btnEliminar" data-id="@estu.Cedula" class="btn btn-danger">
-                                <i class="fa fa-plus-circle mr-1" aria-hidden="true"></i>
-                                Delete
+                            <button type="button" id="btnEliminar" data-id="@estu.Cedula" class="waves-effect waves-light btn-small  teal lighten-1">
+                                <i class="material-icons large" aria-hidden="true">delete</i>
                             </button>
                         </td>
                     </tr>
@@ -292,7 +289,7 @@
 
 
 @section scripts{
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript">
 
         const d = document,

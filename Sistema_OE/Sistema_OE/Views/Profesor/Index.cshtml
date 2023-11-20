@@ -34,8 +34,6 @@
                         <a id="viewCreatePage" class=" col-xl-2 col-lg-2 col-md-2 col-sm-2 waves-effect waves-light btn-small">
                             <i class="material-icons left">add</i>Agregar</a>
                       
-              
-
                 </div>
                
         </div>
@@ -193,6 +191,20 @@
                                 El Email es requerido.
                             </div>
                         </div>
+                        
+                            <div class="input-field col s12">
+                                <select id="select">
+                                </select>
+                                <label>Lista de Secciones</label>
+                            </div>
+                        
+                        
+                            <div class="input-field col s12">
+                                <select id="selectMat">
+                                </select>
+                                <label>Lista de Materias</label>
+                            </div>
+                        
                         <div class="form-group" id="grupo__Domicilio">
                             <label for="domicilio" class="col-form-label">Domicilio:</label>
                             <textarea type="text" class="form-control" id="domicilio" placeholder="Ingrese el Domicilio" required></textarea>
@@ -307,7 +319,9 @@
                 //  $("#createForm")[0].reset();
                 // Cambia el título del modal a "Crear Administrador"
                 $("#agregarPro .modal-title").text("Crear Profesor");
-
+                //agregar lista de secciones
+                cargarSecciones();
+                cargarMaterias();
                 // $("#grupo__Id").hide();//oculta el div de id
                 $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
                 $("#agregarPro").modal("show");// Muestra el modal para crear una nueva entidad
@@ -341,6 +355,12 @@
                             }
                             if (result.email) {
                                 d.getElementById("email").value = result.email;
+                            }
+                            if (result.select) {
+
+                            }
+                            if (result.selectMat) {
+
                             }
                             if (result.domicilio) {
                                 d.getElementById("domicilio").value = result.domicilio;
@@ -461,6 +481,43 @@
                     .catch(error => {
                         console.error("Error en la solicitud fetch:", error);
                     });
+                //Relacionar el profe con la seccion
+
+                var cedula = data.Cedula;
+                var numSeccion = $('select').val();
+                console.log(cedula);
+                console.log(numSeccion);
+                fetch('/Profesor/AsignarSeccion', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        profesorCedula: cedula,
+                        numSeccion: numSeccion
+                    })
+                });
+
+
+                //Relacionar el profe con la materia
+
+                var cedula = data.Cedula;
+                var numMateria = $('selectMat').val();
+                console.log(cedula);
+                console.log(numMateria);
+                fetch('/Profesor/AsignarMateria', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        profesorCedula: cedula,
+                        numMateria: numMateria
+                    })
+                });
+
+
+
 
             }
 
@@ -611,6 +668,32 @@
                 }
             });
         });
+        //CargarSelect
+        function cargarSecciones() {
+            $.getJSON('/Profesor/GetSecciones', function (data) {
+                console.log(data);
+                var select = $('#select');
+                select.empty();
+                select.append('<option value="" disabled selected>Selecione...</option>');
+                $.each(data, function (index, item) {
+                    select.append('<option value="' + item.numSeccion + '">' + item.nombreSeccion + '</option>');
+                });
+                select.formSelect(); // Re-inicializa el select para que Materialize lo detecte
+            });
+        }
+        function cargarMaterias() {
+            $.getJSON('/Profesor/GetMaterias', function (data) {
+                console.log(data);
+                var selectMat = $('#selectMat');
+                selectMat.empty();
+                selectMat.append('<option value="" disabled selected>Selecione...</option>');
+                $.each(data, function (index, item) {
+                    selectMat.append('<option value="' + item.numMateria + '">' + item.nombre + '</option>');
+                });
+                selectMat.formSelect(); // Re-inicializa el select para que Materialize lo detecte
+            });
+        }
+
 
     </script>
 

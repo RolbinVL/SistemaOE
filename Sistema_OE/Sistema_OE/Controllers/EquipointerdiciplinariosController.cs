@@ -110,9 +110,10 @@ namespace Sistema_OE.Controllers
                 SqlParameter seAgregoParam = new SqlParameter("@seAgrego", System.Data.SqlDbType.TinyInt);
                 seAgregoParam.Direction = System.Data.ParameterDirection.Output;
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC paCrearEquipo @cedula, @nombre, @especialidad, @email, @domicilio, @msj OUTPUT, @seAgrego OUTPUT",
+                _dbContext.Database.ExecuteSqlRaw("EXEC paCrearEquipo @cedula, @nombre, @apellidos, @especialidad, @email, @domicilio, @msj OUTPUT, @seAgrego OUTPUT",
                     new SqlParameter("@cedula", equipo.Cedula),
                     new SqlParameter("@nombre", equipo.Nombre),
+                    new SqlParameter("@apellidos", equipo.Apellidos),
                     new SqlParameter("@especialidad", equipo.Especialidad),
                     new SqlParameter("@email", equipo.Email),
                     new SqlParameter("@domicilio", equipo.Domicilio),
@@ -175,9 +176,10 @@ namespace Sistema_OE.Controllers
                     Direction = System.Data.ParameterDirection.Output
                 };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC paActualizarEquipo @cedula, @nombre, @especialidad, @email, @domicilio, @msj output, @seModifico output",
+                _dbContext.Database.ExecuteSqlRaw("EXEC paActualizarEquipo @cedula, @nombre,@apellidos, @especialidad, @email, @domicilio, @msj output, @seModifico output",
                     new SqlParameter("@cedula", equipo.Cedula),
                     new SqlParameter("@nombre", equipo.Nombre),
+                    new SqlParameter("@apellidos", equipo.Apellidos),
                     new SqlParameter("@especialidad", equipo.Especialidad),
                     new SqlParameter("@email", equipo.Email),
                     new SqlParameter("@domicilio", equipo.Domicilio),
@@ -227,7 +229,7 @@ namespace Sistema_OE.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return Json(new { status = 0, mensaje = "Error al eliminar el profesor" });
+                return Json(new { status = 0, mensaje = "Error al eliminar" });
             }
         }
         #endregion  

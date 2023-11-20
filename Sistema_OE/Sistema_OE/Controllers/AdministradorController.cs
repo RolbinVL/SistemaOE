@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Sistema_OE.Controllers
 {
-    [Authorize]
+   
     public class AdministradorController : Controller
     {
         #region Variables Globales
@@ -174,7 +174,7 @@ namespace Sistema_OE.Controllers
                     Direction = System.Data.ParameterDirection.Output
                 };
 
-                _dbContext.Database.ExecuteSqlRaw("EXEC paActualizarAdministador @cedAdministrativo, @nombre, @apellidos, @email, @domicilio, @password, @msj output, @seModifico output",
+                _dbContext.Database.ExecuteSqlRaw("EXEC paActualizarAdministador @cedAdministrativo, @nombre, @apellidos, @email, @domicilio, @msj output, @seModifico output",
                     new SqlParameter("@cedAdministrativo", id),
                     new SqlParameter("@nombre", administrativo.Nombre),
                     new SqlParameter("@apellidos", administrativo.Apellidos),

@@ -224,6 +224,49 @@ namespace Sistema_OE.Controllers
         }
         #endregion  
 
+        #region getMateria
+        public JsonResult GetEstudiantes()
+        {
+            try
+            {
+                var materias = _dbContext.Set<Estudiante>()
+             .FromSqlRaw("SELECT * FROM  fnListaEstudiante()")
+             .ToList();
+
+                return Json(materias);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Json(new { error = ex.Message });
+            }
+        }
+        #endregion 
+
+        #region asignar materia
+        [HttpPost]
+        public async Task<IActionResult> AsignarEstudiante([FromBody] Estudianteseccionanio estudianteAsignada)
+        {
+            try
+            {
+                var estudianteCedulaParam = new SqlParameter("@estudianteCedula", estudianteAsignada.CedulaEstudiante);
+                var numMateriaParam = new SqlParameter("@numMateria", estudianteAsignada.NumSeccion);
+
+                await _dbContext.Database.ExecuteSqlRawAsync("EXEC sp_AsignarEst @estudianteCedula, @numSeccion", estudianteCedulaParam, numMateriaParam);
+
+                return Json(new { success = true, message = "Estudiante asignada con éxito." });
+            }
+            catch (Exception ex)
+            {
+                // Aquí puedes manejar el error. Por ejemplo, podrías registrar el error en tus logs.
+                Console.WriteLine(ex.Message);
+
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion 
+
     }
 
 

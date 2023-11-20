@@ -9,14 +9,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 }
-<div class="container margin-container p-4 glass" id="renderBody">
+<div class="container margin-container p-4 glass" id="renderBody" teal>
     <div class="row fila">
 
         <!--BOTON-->
 
         <div class="row">
             <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
-                <h3 class="d-flex justify-content-center">Profesor</h3>
+                <h3 class="d-flex justify-content-center">Administrador</h3>
             </div>
             <div>
 
@@ -140,7 +140,7 @@
     Vista de los Modales
 -->
 <!------------------------------------------Modal Agregar y Editar----------------------------------------------->
-<div class="modal fade"
+<div class="modal fade" 
      id="agregarAdm"
      data-bs-backdrop="static"
      data-bs-keyboard="false"
@@ -197,13 +197,7 @@
                             El Domicilio es requerido.
                         </div>
                     </div>
-                    <div class="form-group" id="grupo__Contraseña">
-                        <label for="inputPassword5" class="form-label">Contraseña</label>
-                        <input type="password" id="contraseña" class="form-control" aria-describedby="passwordHelpBlock">
-                        <div id="passwordHelpBlock" class="form-text">
-                            Su contraseña debe tener entre 8 y 20 caracteres, contener letras y números, y no debe contener espacios, caracteres especiales ni emoji.
-                        </div>
-                    </div>
+                   
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" class="btn btn-primary" id="btnConfi"></button>
@@ -337,9 +331,7 @@
                              if (result.domicilio) {
                                  d.getElementById("domicilio").value = result.domicilio;
                              }
-                             if (result.password) {
-                                 d.getElementById("contraseña").value = result.password;
-                             }
+                            
                          }
 
 
@@ -423,7 +415,7 @@
                     Apellidos: d.getElementById("apellido").value,
                     Email: d.getElementById("email").value,
                     Domicilio: d.getElementById("domicilio").value,
-                    Password: d.getElementById("contraseña").value,
+                   
                 };
                 console.log(data);
 
@@ -466,7 +458,7 @@
                     Apellidos: d.getElementById("apellido").value,
                     Email: d.getElementById("email").value,
                     Domicilio: d.getElementById("domicilio").value,
-                    Password: d.getElementById("contraseña").value,
+                   
                 };
                 console.log(data);
                 // Realizar la solicitud fetch

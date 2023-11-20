@@ -3,9 +3,10 @@
 @using X.PagedList.Web.Common;
 
 @{
-    ViewData["Title"] = "Lista de Seccion";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    ViewData["Title"] = "Lista de Seccion";
+    
 }
 
 
@@ -19,7 +20,7 @@
             <!--BOTON-->
             <div class="row">
                 <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
-                    <h3 class="d-flex justify-content-center">Seccion</h3>
+                    <h3 class="d-flex justify-content-center">Sección</h3>
                 </div>
                 <div>
 
@@ -129,6 +130,7 @@
     <br />
     <br />
 </div>
+</div>
 
 
 <!--
@@ -166,6 +168,15 @@
                             El Nombre es requerido.
                         </div>
                     </div>
+                    
+                           <div class="input-field col s12">
+            
+                               <select id="selectEst">
+                                </select>
+                                <label>Lista de Estudiantes</label>
+                           </div>
+                   
+                        
                     <div class="form-group" id="grupo__Cantidad">
                         <label for="cantidad" class="col-form-label">Cantidad:</label>
                         <input type="text" class="form-control" id="cantidad" placeholder="Ingrese la cantidad" required />
@@ -174,6 +185,7 @@
                             La cantidad es requerido.
                         </div>
                     </div>
+                   
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
@@ -266,7 +278,8 @@
                 
                 $("#agregarSecc .modal-title").text("Crear Seccion");
                // $("#CedAdministrador").prop("disabled", false); // deshabilitar el campo de entrada
-                
+                    //agregar lista de secciones
+                    cargarEstudiantes();
                 $("#btnConfi").text("Crear"); 
                 $("#idnum").hide();
                 $("#numSeccion").hide();
@@ -406,6 +419,25 @@
                     .catch(error => {
                         console.error("Error en la solicitud fetch:", error);
                     });
+
+                    //Relacionar el seccion con el estudiante
+
+                    var cedula = data.Cedula;
+                    var numSeccion = $('selectEst').val();
+                    console.log(cedula);
+                    console.log(numSeccion);
+                
+                    fetch('/Seccions/AsignarEstudiante', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            estudianteCedula: cedula,
+                            numSeccion: numSeccion
+                        })
+                    });
+
 
             }
 
@@ -552,6 +584,25 @@
                 }
             });
         });
+        function cargarEstudiantes() {
+            $.getJSON('/Seccions/GetEstudiantes', function (data) {
+                console.log(data);
+                var selectEst = $('#selectEst');
+                selectEst.empty();
+                selectEst.append('<option value="" disabled selected>Selecione...</option>');
+                $.each(data, function (index, item) {
+                    selectEst.append('<option value="' + item.cedula + '">' + item.nombre + '</option>');
+                });
+                selectEst.formSelect();
+            });
+        }
+
+
+    
+
+
+
+
 
     </script>
 }

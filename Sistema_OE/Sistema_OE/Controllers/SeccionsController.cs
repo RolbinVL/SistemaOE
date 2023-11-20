@@ -133,7 +133,7 @@ namespace Sistema_OE.Controllers
             try
             {
                 var seccion = _dbContext.Seccions
-                    .FromSqlRaw("EXEC paBuscarUnSec @p0, @p1", id, verId)
+                    .FromSqlRaw("EXEC paBuscarUnaSeccion @p0, @p1", id, verId)
                     .ToList(); // Ejecuta la consulta y obtiene los resultados
 
                 if (seccion.Count > 0)
@@ -223,6 +223,51 @@ namespace Sistema_OE.Controllers
                 return Json(new { status = 0, mensaje = "Error al eliminar la materia" });
             }
         }
-        #endregion  
+        #endregion
+
+
+        #region getEstudiante
+        public JsonResult GetEstudiantes()
+        {
+            try
+            {
+                var estudiantes = _dbContext.Set<Estudiante>()
+             .FromSqlRaw("SELECT * FROM  fnListaEstudiante()")
+             .ToList();
+
+                return Json(estudiantes);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Json(new { error = ex.Message });
+            }
+        }
+        #endregion 
+
+        #region asignar Estudiante
+        [HttpPost]
+        public async Task<IActionResult> AsignarEstudiante([FromBody] Estudianteseccionanio estudianteAsignada)
+        {
+            try
+            {
+                var estudianteCedulaParam = new SqlParameter("@estudianteCedula", estudianteAsignada.CedulaEstudiante);
+                var numSeccionParam = new SqlParameter("@numSeccion", estudianteAsignada.NumSeccion);
+
+                await _dbContext.Database.ExecuteSqlRawAsync("EXEC sp_AsignarSeccion @estudianteCedula, @numSeccion", estudianteCedulaParam, numSeccionParam);
+
+                return Json(new { success = true, message = "Estudiante asignada con éxito." });
+            }
+            catch (Exception ex)
+            {
+                // Aquí puedes manejar el error. Por ejemplo, podrías registrar el error en tus logs.
+                Console.WriteLine(ex.Message);
+
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion 
+
     }
 }

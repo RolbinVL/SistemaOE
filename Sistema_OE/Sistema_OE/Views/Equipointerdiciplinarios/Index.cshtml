@@ -16,7 +16,7 @@
         <!--BOTON-->
         <div class="row">
             <div class="col-xl-8 col-lg-2 col-md-2 col-sm-2  offset-xl-2">
-                <h3 class="d-flex justify-content-center">Equipo Inter</h3>
+                <h3 class="d-flex justify-content-center">Equipo Interdiciplinario</h3>
             </div>
             <div>
 
@@ -60,6 +60,9 @@
                         Nombre
                     </th>
                     <th>
+                        Apellidos
+                    </th>
+                    <th>
                         Especialidad
                     </th>
                     <th>
@@ -78,6 +81,10 @@
                     <tr>
                         <td id="Nomb">
                             @equi.Nombre
+
+                        </td>
+                        <td id="Ape">
+                            @equi.Apellidos
 
                         </td>
                         <td id="Espe">
@@ -179,6 +186,14 @@
                             El Nombre es requerido.
                         </div>
                     </div>
+                    <div class="form-group" id="grupo__Apellidos">
+                        <label for="apellidos" class="col-form-label">Apellidos:</label>
+                        <input type="text" class="form-control" id="apellidos" placeholder="Ingrese los Apellidos" required />
+                        <label for="apellidos" class="m-1 msj__label" id="lblApellidosError"></label>
+                        <div class="invalid-feedback">
+                            Los Apellidos es requerido.
+                        </div>
+                    </div>
                     <div class="form-group" id="grupo__Especialidad">
                         <label for="especialidad" class="col-form-label">Especialidad:</label>
                         <input type="text" class="form-control" id="especialidad" placeholder="Ingrese Especialidad" required />
@@ -268,6 +283,10 @@
 
             </div>
             <div class="modal-body">
+                <p><strong>Apellidos:</strong> <span id="detalleApellidos"></span></p>
+
+            </div>
+            <div class="modal-body">
                 <p><strong>Especialidad:</strong> <span id="detalleEspecialidad"></span></p>
 
             </div>
@@ -337,6 +356,9 @@
                             if (result.nombre) {
                                 d.getElementById("nombre").value = result.nombre;
                             }
+                            if (result.apellidos) {
+                                d.getElementById("apellidos").value = result.apellidos;
+                            }
                             if (result.especialidad) {
                                 d.getElementById("especialidad").value = result.especialidad;
                             }
@@ -380,6 +402,9 @@
                             }
                             if (result.nombre) {
                                 d.getElementById("detalleNombre").textContent = result.nombre;
+                            }
+                            if (result.apellidos) {
+                                d.getElementById("detalleApellidos").textContent = result.apellidos;
                             }
                             if (result.especialidad) {
                                 d.getElementById("detalleEspecialidad").textContent = result.especialidad;
@@ -429,6 +454,7 @@
                 const data = {
                     Cedula: d.getElementById("cedula").value,
                     Nombre: d.getElementById("nombre").value,
+                    Apellidos: d.getElementById("apellidos").value,
                     Especialidad: d.getElementById("especialidad").value,
                     Email: d.getElementById("email").value,
                     Domicilio: d.getElementById("domicilio").value,
@@ -471,6 +497,7 @@
                 const data = {
                     Cedula: d.getElementById("cedula").value,
                     Nombre: d.getElementById("nombre").value,
+                    Apellidos: d.getElementById("apellidos").value,
                     Especialidad: d.getElementById("especialidad").value,
                     Email: d.getElementById("email").value,
                     Domicilio: d.getElementById("domicilio").value
@@ -588,6 +615,7 @@
                                     var row = "<tr>" +
 
                                         "<td>" + equi.nombre + "</td>" +
+                                        "<td>" + equi.apellidos + "</td>" +
                                         "<td>" + equi.especialidad + "</td>" +
                                         "<td>" + equi.email + "</td>" +
                                         "<td>" + equi.domicilio + "</td>" +

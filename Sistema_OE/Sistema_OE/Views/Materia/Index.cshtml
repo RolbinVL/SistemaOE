@@ -89,6 +89,7 @@
     <div id="mensaje-vacio" class="text-center text-muted" style="display: none;">
         No se encontraron registros.
     </div>
+    </div>
 
     <div id="pagination-container" class="pagination">
         <ul class="pagination">
@@ -160,6 +161,11 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="btnregresar" data-bs-dismiss="modal">Cerrar</button>
                         <button type="submit" class="btn btn-primary" id="btnConfi"></button>
+                    </div>
+                    <div class="input-field col s12">
+                        <select id="select">
+                        </select>
+                        <label>Lista de Estudiantes</label>
                     </div>
                 </form>
             </div>
@@ -245,6 +251,9 @@
               //  $("#createForm")[0].reset();
                 // Cambia el título del modal a "Crear Administrador"
                 $("#agregarMat .modal-title").text("Crear Materia");
+
+                //agregar lista de secciones
+                cargarEstu();
                
                // $("#grupo__Id").hide();//oculta el div de id
                 $("#btnConfi").text("Crear"); // Cambia el texto del botón a "Crear"
@@ -276,6 +285,10 @@
                             if (result.nombre) {
                                 d.getElementById("nombre").value = result.nombre;
                             }
+                            if (result.select) {
+
+                            }
+
                         }
 
 
@@ -379,6 +392,22 @@
                     .catch(error => {
                         console.error("Error en la solicitud fetch:", error);
                     });
+                    //Relacionar el profe con la seccion
+
+                var cedula = data.Cedula;
+                var numSeccion = $('select').val();
+                console.log(cedula);
+                console.log(numSeccion);
+                fetch("/Materia/AsignarEstudiante", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        estudianteCedula: cedula,
+                        numSeccion: numSeccion
+                    })
+                });
 
             }
 
@@ -524,6 +553,21 @@
                 }
             });
         });
+        //CargarSelect
+        function cargarEstu() {
+            $.getJSON('/Materia/GetEstudiantes', function (data) {
+                console.log(data);
+                var select = $('#select');
+                select.empty();
+                select.append('<option value="" disabled selected>Selecione...</option>');
+                $.each(data, function (index, item) {
+                    select.append('<option value="' + item.cedula + '">' + item.nombre + '</option>');
+                });
+                 // Re-inicializa el select para que Materialize lo detecte
+                select.formSelect();
+            });
+            
+        }
 
     </script>
 }

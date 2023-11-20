@@ -1,17 +1,18 @@
 ﻿sidebar {
-    background: rgba(24, 29, 56, .7);
+    /*background: rgba(24, 29, 56, .7);*/
     margin: 0;
     height: 100vh;
     display: flex;
     /*    align-items: center;*/
     justify-content: center;
-    background-color: #fff;
+    
 }
 
 
-ul{
+ul {
     padding: 0;
     list-style-type: none;
+    background-color: #009688;
 }
 
 li {
@@ -27,7 +28,7 @@ li {
     transition: 0.5s;
     margin: 0.8em;
     transform: rotate(1deg) skew(05deg);
- 
+    background-color: #009688;
 }
 
 li a::before,

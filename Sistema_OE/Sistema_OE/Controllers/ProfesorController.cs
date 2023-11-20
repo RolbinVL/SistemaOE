@@ -230,6 +230,94 @@ namespace Sistema_OE.Controllers
                 return Json(new { status = 0, mensaje = "Error al eliminar el profesor" });
             }
         }
-        #endregion  
+        #endregion
+
+        #region getSeccion
+        public JsonResult GetSecciones()
+        {
+            try
+            {
+                var secciones = _dbContext.Set<Seccion>()
+             .FromSqlRaw("SELECT * FROM  fnListaSeccion()")
+             .ToList();
+
+                return Json(secciones);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Json(new { error = ex.Message });
+            }
+        }
+        #endregion 
+
+        #region asignar seccion
+        [HttpPost]
+        public async Task<IActionResult> AsignarSeccion([FromBody] Seccionasignadum seccionAsignada)
+        {
+            try
+            {
+                var profesorCedulaParam = new SqlParameter("@profesorCedula", seccionAsignada.ProfesorCedula);
+                var numSeccionParam = new SqlParameter("@numSeccion", seccionAsignada.NumSeccion);
+
+                await _dbContext.Database.ExecuteSqlRawAsync("EXEC sp_AsignarSeccion @profesorCedula, @numSeccion", profesorCedulaParam, numSeccionParam);
+
+                return Json(new { success = true, message = "Sección asignada con éxito." });
+            }
+            catch (Exception ex)
+            {
+                // Aquí puedes manejar el error. Por ejemplo, podrías registrar el error en tus logs.
+                Console.WriteLine(ex.Message);
+
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion 
+
+        #region getMateria
+        public JsonResult GetMaterias()
+        {
+            try
+            {
+                var materias = _dbContext.Set<Materium>()
+             .FromSqlRaw("SELECT * FROM  fnListaMateria()")
+             .ToList();
+
+                return Json(materias);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Json(new { error = ex.Message });
+            }
+        }
+        #endregion 
+
+        #region asignar materia
+        [HttpPost]
+        public async Task<IActionResult> AsignarMateria([FromBody] Impartematerium materiaAsignada)
+        {
+            try
+            {
+                var profesorCedulaParam = new SqlParameter("@profesorCedula", materiaAsignada.ProfesorCedula);
+                var numMateriaParam = new SqlParameter("@numMateria", materiaAsignada.NumMateria);
+
+                await _dbContext.Database.ExecuteSqlRawAsync("EXEC sp_AsignarMateria @profesorCedula, @numMateria", profesorCedulaParam, numMateriaParam);
+
+                return Json(new { success = true, message = "Materia asignada con éxito." });
+            }
+            catch (Exception ex)
+            {
+                // Aquí puedes manejar el error. Por ejemplo, podrías registrar el error en tus logs.
+                Console.WriteLine(ex.Message);
+
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion 
+
+
     }
 }
